@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import firebase from '../firebase';
 // reactstrap components
 import {
     DropdownMenu,
@@ -19,6 +20,19 @@ import {
 } from "reactstrap";
 
 class DashboardNavbar extends React.Component {
+    logout() {
+        firebase.auth().signOut()
+            .then(() => {
+                console.log('Sign out successfully')
+            })
+            .catch((error) => {
+                let errorCode = error.code
+                let errorMessage = error.message
+                let messageToShow = errorCode + ': ' + errorMessage
+                alert(messageToShow)
+            })
+    }
+
     render() {
         return (
             <>
@@ -80,7 +94,7 @@ class DashboardNavbar extends React.Component {
                                         <span>Support</span>
                                     </DropdownItem>
                                     <DropdownItem divider />
-                                    <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                                    <DropdownItem href="#pablo" onClick={this.logout}>
                                         <i className="ni ni-user-run" />
                                         <span>Logout</span>
                                     </DropdownItem>
