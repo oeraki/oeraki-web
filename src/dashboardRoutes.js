@@ -3,8 +3,7 @@
 // import Maps from "views/examples/Maps.jsx";
 // import Register from "views/examples/Register.jsx";
 import Feed from './components/Feed';
-// import Tables from "views/examples/Tables.jsx";
-// import Icons from "views/examples/Icons.jsx";
+import Profile from './components/Profile';
 
 var routes = [
     {
@@ -12,6 +11,13 @@ var routes = [
         name: "Feed",
         icon: "ni ni-tv-2 text-primary",
         component: Feed,
+        layout: "/dashboard"
+    },
+    {
+        path: "/profile",
+        name: "Profile",
+        icon: "ni ni-single-02 text-primary",
+        component: Profile,
         layout: "/dashboard"
     },
 ];
