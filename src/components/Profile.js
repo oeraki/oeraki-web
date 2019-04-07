@@ -8,14 +8,9 @@ import {
     CardBody,
     CardImg,
     CardTitle,
-    CardText,
-    FormGroup,
-    Form,
-    Input,
     Container,
     Row,
     Col,
-    Media
 } from "reactstrap";
 
 class Profile extends React.Component {
