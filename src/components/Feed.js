@@ -3,6 +3,11 @@ import Header from './Header';
 import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge } from "reactstrap";
 
 class Feed extends React.Component {
+
+    routeChange() {
+        this.props.history.push("videos");
+      }
+
     render() {
         return (
             <>
@@ -22,6 +27,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg 
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://upload.wikimedia.org/wikipedia/commons/3/37/Childish_Gambino.jpg'
                                     top
                                 />
@@ -57,6 +63,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://images.unsplash.com/photo-1547747031-a3605ce15ff9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
                                     top
                                 />
@@ -92,6 +99,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://upload.wikimedia.org/wikipedia/commons/7/7a/Traffic_1973.jpg'
                                     top
                                 />
@@ -127,6 +135,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://thewhitetree.com.au/app/uploads/2018/01/2M9A0536-2.jpg'
                                     top
                                 />
@@ -175,6 +184,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://upload.wikimedia.org/wikipedia/commons/3/37/Childish_Gambino.jpg'
                                     top
                                 />
@@ -210,6 +220,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://images.unsplash.com/photo-1547747031-a3605ce15ff9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80'
                                     top
                                 />
@@ -245,6 +256,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://upload.wikimedia.org/wikipedia/commons/7/7a/Traffic_1973.jpg'
                                     top
                                 />
@@ -280,6 +292,7 @@ class Feed extends React.Component {
                         <Col lg="6" xl="3">
                             <Card className="card-stats mb-4 mb-xl-0">
                                 <CardImg
+                                    onClick={this.routeChange.bind(this)}
                                     src='https://thewhitetree.com.au/app/uploads/2018/01/2M9A0536-2.jpg'
                                     top
                                 />

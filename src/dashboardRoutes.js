@@ -4,7 +4,7 @@
 // import Register from "views/examples/Register.jsx";
 import Feed from './components/Feed';
 import Profile from './components/Profile';
-
+import Video from './components/Video';
 var routes = [
     {
         path: "/feed",
@@ -19,6 +19,13 @@ var routes = [
         icon: "ni ni-single-02 text-primary",
         component: Profile,
         layout: "/dashboard"
+    },
+    {
+        path: "/videos",
+        name: "Videos",
+        icon: "ni ni-single-02 text-primary",
+        component: Video,
+        layout: "/video"
     },
 ];
 export default routes;
