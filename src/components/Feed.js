@@ -5,7 +5,7 @@ import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge } from "
 class Feed extends React.Component {
 
     routeChange() {
-        this.props.history.push("videos");
+        this.props.history.push("video");
       }
 
     render() {
