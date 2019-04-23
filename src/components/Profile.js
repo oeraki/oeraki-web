@@ -11,14 +11,126 @@ import {
     Container,
     Row,
     Col,
+    Modal,
+    Input,
+    FormGroup
 } from "reactstrap";
+import Dropzone from 'react-dropzone'
 
 class Profile extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.toggleUploadModal = this.toggleUploadModal.bind(this)
+
+        this.state = {
+            uploadModal: false
+        }
+    }
+
+    toggleUploadModal() {
+        this.setState({
+            uploadModal: !this.state.uploadModal
+        })
+    }
+
     render() {
+        const fileInputStyle = {
+            height: '70px',
+            width: '100%',
+            backgroundColor: 'transparent',
+            borderRadius: '10px',
+            borderWidth: '4px',
+            borderStyle: 'dashed',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }
         return (
             <>
                 <Header />
                 <Container className="mt--7" fluid>
+                    <Modal
+                        className="modal-dialog-centered"
+                        isOpen={this.state.uploadModal}
+                        toggle={this.toggleUploadModal}
+                    >
+                        <div className="modal-body p-0">
+                            <Card className="bg-secondary shadow border-0">
+                                <CardHeader className="bg-transparent">
+                                    <span><i className="ni ni-spaceship"></i> Upload Music Video</span>
+                                    <button
+                                        aria-label="Close"
+                                        className="close"
+                                        data-dismiss="modal"
+                                        type="button"
+                                        onClick={this.toggleUploadModal}
+                                    >
+                                        <span aria-hidden={true}>×</span>
+                                    </button>
+                                </CardHeader>
+                                <CardBody>
+                                    <FormGroup>
+                                        <label className="form-control-label">Title</label>
+                                        <Input
+                                            className="form-control-alternative"
+                                            placeholder="Title of your song"
+                                            type="text"
+                                        />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <label className="form-control-label">Description</label>
+                                        <Input
+                                            className="form-control-alternative"
+                                            placeholder="A few words about your song ..."
+                                            rows="4"
+                                            type="textarea"
+                                        />
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <label className="form-control-label">Thumbnail</label>
+                                        <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                                            {({ getRootProps, getInputProps }) => (
+                                                <section>
+                                                    <div {...getRootProps()}>
+                                                        <input {...getInputProps()} />
+                                                        <div style={fileInputStyle}>
+                                                            <span><i className="ni ni-image"></i> Click to select file</span>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            )}
+                                        </Dropzone>
+                                    </FormGroup>
+                                    <FormGroup>
+                                        <label className="form-control-label">Video</label>
+                                        <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                                            {({ getRootProps, getInputProps }) => (
+                                                <section>
+                                                    <div {...getRootProps()}>
+                                                        <input {...getInputProps()} />
+                                                        <div style={fileInputStyle}>
+                                                            <span><i className="ni ni-note-03"></i> Click to select file</span>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            )}
+                                        </Dropzone>
+                                    </FormGroup>
+                                    <div className="text-center">
+                                        <Button
+                                            className="my-4"
+                                            color="primary"
+                                            type="button"
+                                        >
+                                            Upload
+                                        </Button>
+                                    </div>
+                                </CardBody>
+                            </Card>
+                            
+                        </div>
+                    </Modal>
                 <Row>
                     <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
                         <Card className="card-profile shadow">
@@ -41,7 +153,7 @@ class Profile extends React.Component {
                                     className="mr-4"
                                     color="info"
                                     href="#pablo"
-                                    onClick={e => e.preventDefault()}
+                                    onClick={this.toggleUploadModal}
                                     size="sm"
                                     >
                                     Upload song
