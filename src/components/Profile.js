@@ -16,15 +16,27 @@ import {
     FormGroup
 } from "reactstrap";
 import Dropzone from 'react-dropzone'
+import firebase from '../firebase'
 
 class Profile extends React.Component {
     constructor(props) {
         super(props)
 
         this.toggleUploadModal = this.toggleUploadModal.bind(this)
+        this.handleSongDescriptionChange = this.handleSongDescriptionChange.bind(this)
+        this.handleSongTitleChange = this.handleSongTitleChange.bind(this)
+        this.handleThumbnailFileChange = this.handleThumbnailFileChange.bind(this)
+        this.handleVideoFileChange = this.handleVideoFileChange.bind(this)
+
+        this.uploadSong = this.uploadSong.bind(this)
 
         this.state = {
-            uploadModal: false
+            uploadModal: false,
+            songTitle: '',
+            songDescription: '',
+            storageRef: firebase.storage().ref(),
+            thumbnailFile: null,
+            videoFile: null,
         }
     }
 
@@ -32,6 +44,58 @@ class Profile extends React.Component {
         this.setState({
             uploadModal: !this.state.uploadModal
         })
+    }
+
+    handleSongTitleChange(event) {
+        this.setState({ songTitle: event.target.value })
+    }
+
+    handleSongDescriptionChange(event) {
+        this.setState({ songDescription: event.target.value })
+    }
+
+    handleThumbnailFileChange(files) {
+        this.setState({ thumbnailFile: files[0] })
+    }
+
+    handleVideoFileChange(files) {
+        this.setState({ videoFile: files[0] })
+    }
+
+    uploadSong() {
+        console.log(this.state.songTitle)
+        console.log(this.state.songDescription)
+        console.log(this.state.thumbnailFile)
+        console.log(this.state.videoFile)
+
+        const thumbnailName = this.state.thumbnailFile.name
+        const videoName = this.state.videoFile.name
+
+        let thumbnailUploadTask = this.state.storageRef.child('images/' + thumbnailName).put(this.state.thumbnailFile);
+        let videoUploadTask = this.state.storageRef.child('videos/' + videoName).put(this.state.videoFile);
+
+        thumbnailUploadTask.on('state_changed', function (snapshot) {
+            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            console.log('Thumbnail upload is ' + progress + '% done')
+        }, function (error) {
+            // Handle unsuccessful uploads
+        }, function () {
+            thumbnailUploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                console.log('Thumbnail file available at', downloadURL)
+            })
+        })
+
+        videoUploadTask.on('state_changed', function (snapshot) {
+            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+            console.log('Video upload is ' + progress + '% done')
+        }, function (error) {
+            // Handle unsuccessful uploads
+        }, function () {
+            videoUploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
+                console.log('Video file available at', downloadURL)
+            })
+        })
+
     }
 
     render() {
@@ -76,6 +140,8 @@ class Profile extends React.Component {
                                             className="form-control-alternative"
                                             placeholder="Title of your song"
                                             type="text"
+                                            onChange={this.handleSongTitleChange}
+                                            value={this.state.songTitle}
                                         />
                                     </FormGroup>
                                     <FormGroup>
@@ -85,17 +151,27 @@ class Profile extends React.Component {
                                             placeholder="A few words about your song ..."
                                             rows="4"
                                             type="textarea"
+                                            onChange={this.handleSongDescriptionChange}
+                                            value={this.state.songDescription}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <label className="form-control-label">Thumbnail</label>
-                                        <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                                        <Dropzone 
+                                            onDrop={this.handleThumbnailFileChange}
+                                            multiple={false}
+                                        >
                                             {({ getRootProps, getInputProps }) => (
                                                 <section>
                                                     <div {...getRootProps()}>
                                                         <input {...getInputProps()} />
                                                         <div style={fileInputStyle}>
-                                                            <span><i className="ni ni-image"></i> Click to select file</span>
+                                                            {!this.state.thumbnailFile &&
+                                                                <span><i className="ni ni-image"></i> Click to select file</span>
+                                                            }
+                                                            {this.state.thumbnailFile &&
+                                                                <span>{this.state.thumbnailFile.name}</span>
+                                                            }
                                                         </div>
                                                     </div>
                                                 </section>
@@ -104,13 +180,21 @@ class Profile extends React.Component {
                                     </FormGroup>
                                     <FormGroup>
                                         <label className="form-control-label">Video</label>
-                                        <Dropzone onDrop={acceptedFiles => console.log(acceptedFiles)}>
+                                        <Dropzone 
+                                            onDrop={this.handleVideoFileChange}
+                                            multiple={false}
+                                        >
                                             {({ getRootProps, getInputProps }) => (
                                                 <section>
                                                     <div {...getRootProps()}>
                                                         <input {...getInputProps()} />
                                                         <div style={fileInputStyle}>
-                                                            <span><i className="ni ni-note-03"></i> Click to select file</span>
+                                                            {!this.state.videoFile &&
+                                                                <span><i className="ni ni-note-03"></i> Click to select file</span>
+                                                            }
+                                                            {this.state.videoFile &&
+                                                                <span>{this.state.videoFile.name}</span>
+                                                            }
                                                         </div>
                                                     </div>
                                                 </section>
@@ -122,6 +206,7 @@ class Profile extends React.Component {
                                             className="my-4"
                                             color="primary"
                                             type="button"
+                                            onClick={this.uploadSong}
                                         >
                                             Upload
                                         </Button>
