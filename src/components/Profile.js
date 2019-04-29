@@ -13,7 +13,8 @@ import {
     Col,
     Modal,
     Input,
-    FormGroup
+    FormGroup,
+    Progress
 } from "reactstrap";
 import Dropzone from 'react-dropzone'
 import firebase from '../firebase'
@@ -29,14 +30,49 @@ class Profile extends React.Component {
         this.handleVideoFileChange = this.handleVideoFileChange.bind(this)
 
         this.uploadSong = this.uploadSong.bind(this)
+        this.uploadAgain = this.uploadAgain.bind(this)
 
         this.state = {
             uploadModal: false,
             songTitle: '',
             songDescription: '',
             storageRef: firebase.storage().ref(),
+            databaseRef: firebase.firestore(),
+            user: firebase.auth().currentUser,
             thumbnailFile: null,
             videoFile: null,
+            thumbnailURL: '',
+            videoURL: '',
+            uploadStatus: null,
+            uploadPercentage: 0,
+            shouldUploadVideoInfo: false
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        // If there were changes on both thumbnailURL and videoURL
+        if (this.state.shouldUploadVideoInfo && this.state.shouldUploadVideoInfo !== prevState.shouldUploadVideoInfo) {
+            let db = this.state.databaseRef
+            db.collection("videos").add({
+                owner: this.state.user.uid,
+                thumbnail: this.state.thumbnailURL,
+                videoSource: this.state.videoURL,
+                comments: [],
+                views: 0,
+                tips: {
+                    '5': 0,
+                    '10': 0,
+                    '15': 0
+                },
+                title: this.state.songTitle,
+                description: this.state.songDescription
+            })
+            .then(function (docRef) {
+                console.log("Document written with ID: ", docRef.id);
+            })
+            .catch(function (error) {
+                console.error("Error adding document: ", error);
+            })
         }
     }
 
@@ -62,6 +98,20 @@ class Profile extends React.Component {
         this.setState({ videoFile: files[0] })
     }
 
+    uploadAgain() {
+        this.setState({ 
+            uploadStatus: null, 
+            uploadPercentage: 0,
+            thumbnailFile: null,
+            videoFile: null,
+            songTitle: '',
+            songDescription: '',
+            thumbnailURL: '',
+            videoURL: '',
+            shouldUploadVideoInfo: false
+        })
+    }
+
     uploadSong() {
         console.log(this.state.songTitle)
         console.log(this.state.songDescription)
@@ -74,6 +124,10 @@ class Profile extends React.Component {
         let thumbnailUploadTask = this.state.storageRef.child('images/' + thumbnailName).put(this.state.thumbnailFile);
         let videoUploadTask = this.state.storageRef.child('videos/' + videoName).put(this.state.videoFile);
 
+        this.setState({ uploadStatus: 'uploading' })
+
+        let self = this
+
         thumbnailUploadTask.on('state_changed', function (snapshot) {
             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             console.log('Thumbnail upload is ' + progress + '% done')
@@ -82,17 +136,27 @@ class Profile extends React.Component {
         }, function () {
             thumbnailUploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                 console.log('Thumbnail file available at', downloadURL)
+                self.setState({ thumbnailURL: downloadURL})
+                if (self.state.thumbnailURL !== '' && self.state.videoURL !== '') {
+                    self.setState({ shouldUploadVideoInfo: true })
+                }
             })
         })
 
         videoUploadTask.on('state_changed', function (snapshot) {
             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
             console.log('Video upload is ' + progress + '% done')
+            self.setState({ uploadPercentage: progress.toFixed(2) })
         }, function (error) {
             // Handle unsuccessful uploads
         }, function () {
             videoUploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                 console.log('Video file available at', downloadURL)
+                self.setState({ videoURL: downloadURL })
+                if (self.state.thumbnailURL !== '' && self.state.videoURL !== '') {
+                    self.setState({ shouldUploadVideoInfo: true })
+                }
+                self.setState({ uploadPercentage: 100, uploadStatus: 'done' })
             })
         })
 
@@ -122,7 +186,7 @@ class Profile extends React.Component {
                         <div className="modal-body p-0">
                             <Card className="bg-secondary shadow border-0">
                                 <CardHeader className="bg-transparent">
-                                    <span><i className="ni ni-spaceship"></i> Upload Music Video</span>
+                                    <span>Upload Music Video</span>
                                     <button
                                         aria-label="Close"
                                         className="close"
@@ -133,85 +197,123 @@ class Profile extends React.Component {
                                         <span aria-hidden={true}>×</span>
                                     </button>
                                 </CardHeader>
-                                <CardBody>
-                                    <FormGroup>
-                                        <label className="form-control-label">Title</label>
-                                        <Input
-                                            className="form-control-alternative"
-                                            placeholder="Title of your song"
-                                            type="text"
-                                            onChange={this.handleSongTitleChange}
-                                            value={this.state.songTitle}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <label className="form-control-label">Description</label>
-                                        <Input
-                                            className="form-control-alternative"
-                                            placeholder="A few words about your song ..."
-                                            rows="4"
-                                            type="textarea"
-                                            onChange={this.handleSongDescriptionChange}
-                                            value={this.state.songDescription}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <label className="form-control-label">Thumbnail</label>
-                                        <Dropzone 
-                                            onDrop={this.handleThumbnailFileChange}
-                                            multiple={false}
-                                        >
-                                            {({ getRootProps, getInputProps }) => (
-                                                <section>
-                                                    <div {...getRootProps()}>
-                                                        <input {...getInputProps()} />
-                                                        <div style={fileInputStyle}>
-                                                            {!this.state.thumbnailFile &&
-                                                                <span><i className="ni ni-image"></i> Click to select file</span>
-                                                            }
-                                                            {this.state.thumbnailFile &&
-                                                                <span>{this.state.thumbnailFile.name}</span>
-                                                            }
+                                {!this.state.uploadStatus &&
+                                    <CardBody>
+                                        <FormGroup>
+                                            <label className="form-control-label">Title</label>
+                                            <Input
+                                                className="form-control-alternative"
+                                                placeholder="Title of your song"
+                                                type="text"
+                                                onChange={this.handleSongTitleChange}
+                                                value={this.state.songTitle}
+                                            />
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <label className="form-control-label">Description</label>
+                                            <Input
+                                                className="form-control-alternative"
+                                                placeholder="A few words about your song ..."
+                                                rows="4"
+                                                type="textarea"
+                                                onChange={this.handleSongDescriptionChange}
+                                                value={this.state.songDescription}
+                                            />
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <label className="form-control-label">Thumbnail</label>
+                                            <Dropzone
+                                                onDrop={this.handleThumbnailFileChange}
+                                                multiple={false}
+                                            >
+                                                {({ getRootProps, getInputProps }) => (
+                                                    <section>
+                                                        <div {...getRootProps()}>
+                                                            <input {...getInputProps()} />
+                                                            <div style={fileInputStyle}>
+                                                                {!this.state.thumbnailFile &&
+                                                                    <span><i className="ni ni-image"></i> Click to select file</span>
+                                                                }
+                                                                {this.state.thumbnailFile &&
+                                                                    <span>{this.state.thumbnailFile.name}</span>
+                                                                }
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </section>
-                                            )}
-                                        </Dropzone>
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <label className="form-control-label">Video</label>
-                                        <Dropzone 
-                                            onDrop={this.handleVideoFileChange}
-                                            multiple={false}
-                                        >
-                                            {({ getRootProps, getInputProps }) => (
-                                                <section>
-                                                    <div {...getRootProps()}>
-                                                        <input {...getInputProps()} />
-                                                        <div style={fileInputStyle}>
-                                                            {!this.state.videoFile &&
-                                                                <span><i className="ni ni-note-03"></i> Click to select file</span>
-                                                            }
-                                                            {this.state.videoFile &&
-                                                                <span>{this.state.videoFile.name}</span>
-                                                            }
+                                                    </section>
+                                                )}
+                                            </Dropzone>
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <label className="form-control-label">Video</label>
+                                            <Dropzone
+                                                onDrop={this.handleVideoFileChange}
+                                                multiple={false}
+                                            >
+                                                {({ getRootProps, getInputProps }) => (
+                                                    <section>
+                                                        <div {...getRootProps()}>
+                                                            <input {...getInputProps()} />
+                                                            <div style={fileInputStyle}>
+                                                                {!this.state.videoFile &&
+                                                                    <span><i className="ni ni-note-03"></i> Click to select file</span>
+                                                                }
+                                                                {this.state.videoFile &&
+                                                                    <span>{this.state.videoFile.name}</span>
+                                                                }
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </section>
-                                            )}
-                                        </Dropzone>
-                                    </FormGroup>
-                                    <div className="text-center">
-                                        <Button
-                                            className="my-4"
-                                            color="primary"
-                                            type="button"
-                                            onClick={this.uploadSong}
-                                        >
-                                            Upload
+                                                    </section>
+                                                )}
+                                            </Dropzone>
+                                        </FormGroup>
+                                        <div className="text-center">
+                                            <Button
+                                                className="my-4"
+                                                color="primary"
+                                                type="button"
+                                                onClick={this.uploadSong}
+                                            >
+                                                Upload
                                         </Button>
-                                    </div>
-                                </CardBody>
+                                        </div>
+                                    </CardBody>
+                                }
+                                {this.state.uploadStatus === 'uploading' &&
+                                    <CardBody>
+                                        <div className="progress-wrapper">
+                                            <div className="progress-info">
+                                                <div className="progress-label">
+                                                    <span>Uploading "{this.state.songTitle}"...</span>
+                                                </div>
+                                                <div className="progress-percentage">
+                                                    <span>{this.state.uploadPercentage}%</span>
+                                                </div>
+                                            </div>
+                                        <Progress max="100" value={this.state.uploadPercentage} />
+                                        </div>
+                                    </CardBody>
+                                }
+                                {this.state.uploadStatus === 'done' &&
+                                    <CardBody>
+                                        <div className="py-3 text-center">
+                                            <i className="ni ni-satisfied ni-3x" />
+                                            <h4 className="heading mt-4">Hooray!</h4>
+                                            <p>
+                                                Your awesome song has been uploaded
+                                            </p>
+                                        </div>
+                                        <div className="text-center">
+                                            <Button
+                                                className="my-4"
+                                                color="primary"
+                                                type="button"
+                                                onClick={this.uploadAgain}
+                                            >
+                                                Upload Again
+                                            </Button>
+                                        </div>
+                                    </CardBody>
+                                }
                             </Card>
                             
                         </div>
