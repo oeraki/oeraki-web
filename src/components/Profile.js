@@ -45,15 +45,41 @@ class Profile extends React.Component {
             videoURL: '',
             uploadStatus: null,
             uploadPercentage: 0,
-            shouldUploadVideoInfo: false
+            shouldUploadVideoInfo: false,
+
+            uploaded_videos: []
         }
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         // If there were changes on both thumbnailURL and videoURL
         if (this.state.shouldUploadVideoInfo && this.state.shouldUploadVideoInfo !== prevState.shouldUploadVideoInfo) {
+            // Not sure how we should implement this best. Heres the 2 ways of doing it:
+            
+            // let db = this.state.databaseRef
+            // db.collection("videos").add({
+            //     owner: this.state.user.uid,
+            //     thumbnail: this.state.thumbnailURL,
+            //     videoSource: this.state.videoURL,
+            //     comments: [],
+            //     views: 0,
+            //     tips: {
+            //         '5': 0,
+            //         '10': 0,
+            //         '15': 0
+            //     },
+            //     title: this.state.songTitle,
+            //     description: this.state.songDescription
+            // })
+            // .then(function (docRef) {
+            //     console.log("Document written with ID: ", docRef.id);
+            // })
+            // .catch(function (error) {
+            //     console.error("Error adding document: ", error);
+            // })
+
             let db = this.state.databaseRef
-            db.collection("videos").add({
+            db.collection("users").doc(this.state.user.uid).collection("videos").add({
                 owner: this.state.user.uid,
                 thumbnail: this.state.thumbnailURL,
                 videoSource: this.state.videoURL,
@@ -74,6 +100,23 @@ class Profile extends React.Component {
                 console.error("Error adding document: ", error);
             })
         }
+    }
+
+    componentDidMount() {
+        let db = this.state.databaseRef
+        let self = this
+
+        // Listener on current user's uploaded videos
+        db.collection("users").doc(this.state.user.uid).collection("videos")
+            .onSnapshot(function (querySnapshot) {
+                var uploaded_videos = [];
+                querySnapshot.forEach(function (doc) {
+                    uploaded_videos.push(doc.data());
+                });
+                self.setState({
+                    uploaded_videos: uploaded_videos
+                })
+            });
     }
 
     toggleUploadModal() {
@@ -178,6 +221,38 @@ class Profile extends React.Component {
             <>
                 <Header />
                 <Container className="mt--7" fluid>
+                    {/* <Modal
+                        className="modal-dialog-centered"
+                        isOpen={this.state.uploadModal}
+                        toggle={this.toggleUploadModal}
+                    >
+                        <div className="modal-body p-0">
+                            <Card className="bg-secondary shadow border-0">
+                                <CardHeader className="bg-transparent">
+                                    <span>Upload Music Video</span>
+                                    <button
+                                        aria-label="Close"
+                                        className="close"
+                                        data-dismiss="modal"
+                                        type="button"
+                                        onClick={this.toggleUploadModal}
+                                    >
+                                        <span aria-hidden={true}>×</span>
+                                    </button>
+                                </CardHeader>
+                                <CardBody>
+                                    <div className="py-3 text-center">
+                                        <i className="ni ni-satisfied ni-3x" />
+                                        <h4 className="heading mt-4">Hooray!</h4>
+                                        <p>
+                                            Your awesome song has been uploaded
+                                        </p>
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        </div>
+                    </Modal> */}
+                    
                     <Modal
                         className="modal-dialog-centered"
                         isOpen={this.state.uploadModal}
@@ -404,108 +479,42 @@ class Profile extends React.Component {
                         </Card>
                     </Col>
                     <Col className="order-xl-1" xl="8">
-                        <Card className="bg-secondary shadow" style={{marginBottom: '10px'}}>
-                            <CardHeader>
-                                    <div style={{display: 'flex', alignItems: 'center'}}>
+                        {this.state.uploaded_videos.map((video, index) => (
+                            <Card className="bg-secondary shadow" style={{ marginBottom: '10px' }}>
+                                <CardHeader>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <span className="avatar avatar-sm rounded-circle">
                                             <img
                                                 alt="..."
                                                 src={require("../assets/img/theme/team-4-800x800.jpg")}
                                             />
                                         </span>
-                                        <span style={{marginLeft: '10px'}}>
-                                            <span className="mb-0 text-sm font-weight-bold"> Jessica Jones</span> 
-                                            <span className="mb-0 text-sm"> uploaded</span> 
-                                            <span className="mb-0 text-sm text-muted"> 14 mins ago</span> 
+                                        <span style={{ marginLeft: '10px' }}>
+                                            <span className="mb-0 text-sm font-weight-bold"> Jessica Jones</span>
+                                            <span className="mb-0 text-sm"> uploaded</span>
+                                            <span className="mb-0 text-sm text-muted"> 14 mins ago</span>
                                         </span>
                                     </div>
-                            </CardHeader>
-                            <CardBody>
-                                <Row>
-                                    <Col xs='6'>
-                                        <CardImg src='https://upload.wikimedia.org/wikipedia/commons/3/37/Childish_Gambino.jpg'></CardImg>
-                                    </Col>
-                                    <Col xs='auto'>
-                                        <CardTitle className="font-weight-bold mb-0">
-                                            Never been this way
-                                        </CardTitle>
-                                        <span className="mt-3 mb-0 text-muted text-sm">
-                                            by Childish Gambino<br></br>
-                                            143k views<br></br>
-                                            3:30
+                                </CardHeader>
+                                <CardBody>
+                                    <Row>
+                                        <Col xs='6'>
+                                            <CardImg src={video.thumbnail}></CardImg>
+                                        </Col>
+                                        <Col xs='auto'>
+                                            <CardTitle className="font-weight-bold mb-0">
+                                                {video.title}
+                                            </CardTitle>
+                                            <span className="mt-3 mb-0 text-muted text-sm">
+                                                by Childish Gambino<br></br>
+                                                {video.views} views<br></br>
+                                                3:30
                                         </span>
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
-                        <Card className="bg-secondary shadow" style={{ marginBottom: '10px' }}>
-                            <CardHeader>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <span className="avatar avatar-sm rounded-circle">
-                                        <img
-                                            alt="..."
-                                            src={require("../assets/img/theme/team-4-800x800.jpg")}
-                                        />
-                                    </span>
-                                    <span style={{ marginLeft: '10px' }}>
-                                        <span className="mb-0 text-sm font-weight-bold"> Jessica Jones</span>
-                                        <span className="mb-0 text-sm"> uploaded</span>
-                                        <span className="mb-0 text-sm text-muted"> 14 mins ago</span>
-                                    </span>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <Row>
-                                    <Col xs='6'>
-                                        <CardImg src='https://upload.wikimedia.org/wikipedia/commons/3/37/Childish_Gambino.jpg'></CardImg>
-                                    </Col>
-                                    <Col xs='auto'>
-                                        <CardTitle className="font-weight-bold mb-0">
-                                            Never been this way
-                                    </CardTitle>
-                                        <span className="mt-3 mb-0 text-muted text-sm">
-                                            by Childish Gambino<br></br>
-                                            143k views<br></br>
-                                            3:30
-                                    </span>
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
-                        <Card className="bg-secondary shadow" style={{ marginBottom: '10px' }}>
-                            <CardHeader>
-                                <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <span className="avatar avatar-sm rounded-circle">
-                                        <img
-                                            alt="..."
-                                            src={require("../assets/img/theme/team-4-800x800.jpg")}
-                                        />
-                                    </span>
-                                    <span style={{ marginLeft: '10px' }}>
-                                        <span className="mb-0 text-sm font-weight-bold"> Jessica Jones</span>
-                                        <span className="mb-0 text-sm"> uploaded</span>
-                                        <span className="mb-0 text-sm text-muted"> 14 mins ago</span>
-                                    </span>
-                                </div>
-                            </CardHeader>
-                            <CardBody>
-                                <Row>
-                                    <Col xs='6'>
-                                        <CardImg src='https://upload.wikimedia.org/wikipedia/commons/3/37/Childish_Gambino.jpg'></CardImg>
-                                    </Col>
-                                    <Col xs='auto'>
-                                        <CardTitle className="font-weight-bold mb-0">
-                                            Never been this way
-                                    </CardTitle>
-                                        <span className="mt-3 mb-0 text-muted text-sm">
-                                            by Childish Gambino<br></br>
-                                            143k views<br></br>
-                                            3:30
-                                    </span>
-                                    </Col>
-                                </Row>
-                            </CardBody>
-                        </Card>
+                                        </Col>
+                                    </Row>
+                                </CardBody>
+                            </Card>
+                        ))}
                     </Col>
                 </Row>
                 </Container>
