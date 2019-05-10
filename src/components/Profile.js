@@ -25,6 +25,7 @@ class Profile extends React.Component {
 
         this.toggleUploadModal = this.toggleUploadModal.bind(this)
         this.toggleVideoModal = this.toggleVideoModal.bind(this)
+        this.setCurrentVideo = this.setCurrentVideo.bind(this)
 
         this.handleSongDescriptionChange = this.handleSongDescriptionChange.bind(this)
         this.handleSongTitleChange = this.handleSongTitleChange.bind(this)
@@ -40,18 +41,22 @@ class Profile extends React.Component {
 
             songTitle: '',
             songDescription: '',
-            storageRef: firebase.storage().ref(),
-            databaseRef: firebase.firestore(),
-            user: firebase.auth().currentUser,
             thumbnailFile: null,
             videoFile: null,
             thumbnailURL: '',
             videoURL: '',
+            
+            storageRef: firebase.storage().ref(),
+            databaseRef: firebase.firestore(),
+            user: firebase.auth().currentUser,
+            
             uploadStatus: null,
             uploadPercentage: 0,
             shouldUploadVideoInfo: false,
 
             uploaded_videos: [],
+
+            current_video: null
         }
     }
 
@@ -215,6 +220,14 @@ class Profile extends React.Component {
 
     }
 
+    setCurrentVideo(video) {
+        console.log(video)
+        this.setState({
+            current_video: video,
+            videoModal: !this.state.videoModal,
+        })
+    }
+
     render() {
         const fileInputStyle = {
             height: '70px',
@@ -238,29 +251,46 @@ class Profile extends React.Component {
                         size="lg"
                     >
                         <div className="modal-body p-0">
-                            <Card className="bg-secondary shadow border-0">
-                                <CardHeader className="bg-transparent">
-                                    <span>Video Modal</span>
-                                    <button
-                                        aria-label="Close"
-                                        className="close"
-                                        data-dismiss="modal"
-                                        type="button"
-                                        onClick={this.toggleVideoModal}
-                                    >
-                                        <span aria-hidden={true}>×</span>
-                                    </button>
-                                </CardHeader>
-                                <CardBody>
-                                    <div className="py-3 text-center">
-                                        <i className="ni ni-satisfied ni-3x" />
-                                        <h4 className="heading mt-4">Hooray!</h4>
-                                        <p>
-                                            This is video modal
-                                        </p>
-                                    </div>
-                                </CardBody>
-                            </Card>
+                            {this.state.current_video &&
+                                <Card className="bg-secondary shadow border-0">
+                                    <CardHeader className="bg-transparent">
+                                        <span>{this.state.current_video.title}</span>
+                                        <button
+                                            aria-label="Close"
+                                            className="close"
+                                            data-dismiss="modal"
+                                            type="button"
+                                            onClick={this.toggleVideoModal}
+                                        >
+                                            <span aria-hidden={true}>×</span>
+                                        </button>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <video width="100%" controls>
+                                        <source src={this.state.current_video.videoSource} type="video/mp4">
+                                            </source>
+                                        </video>
+                                    </CardBody>
+                                </Card>
+                            }
+                            {!this.state.current_video &&
+                                <Card className="bg-secondary shadow border-0">
+                                    <CardHeader className="bg-transparent">
+                                        <span>No video selected</span>
+                                        <button
+                                            aria-label="Close"
+                                            className="close"
+                                            data-dismiss="modal"
+                                            type="button"
+                                            onClick={this.toggleVideoModal}
+                                        >
+                                            <span aria-hidden={true}>×</span>
+                                        </button>
+                                    </CardHeader>
+                                    <CardBody>
+                                    </CardBody>
+                                </Card>
+                            }
                         </div>
                     </Modal>
                     
@@ -490,11 +520,11 @@ class Profile extends React.Component {
                         </Card>
                     </Col>
                     <Col className="order-xl-1" xl="8">
-                        {this.state.uploaded_videos.map((video, index) => (
+                        {this.state.uploaded_videos.length > 0 && this.state.uploaded_videos.map((video) => (
                             <Card 
                                 className="bg-secondary shadow" 
                                 style={{ marginBottom: '10px' }} 
-                                onClick={this.toggleVideoModal}
+                                onClick={() => this.setCurrentVideo(video)}
                             >
                                 <CardHeader>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -530,6 +560,22 @@ class Profile extends React.Component {
                                 </CardBody>
                             </Card>
                         ))}
+                        {this.state.uploaded_videos.length === 0 &&
+                            <Card
+                                className="bg-secondary shadow"
+                                style={{ marginBottom: '10px' }}
+                            >
+                                <CardBody>
+                                    <div className="py-3 text-center">
+                                        <i className="ni ni-image ni-3x" />
+                                        <h4 className="heading mt-4">Empty</h4>
+                                        <p>
+                                            It seems you have not uploaded any videos
+                                        </p>
+                                    </div>
+                                </CardBody>
+                            </Card>
+                        }
                     </Col>
                 </Row>
                 </Container>
