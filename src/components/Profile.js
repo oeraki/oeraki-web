@@ -24,6 +24,8 @@ class Profile extends React.Component {
         super(props)
 
         this.toggleUploadModal = this.toggleUploadModal.bind(this)
+        this.toggleVideoModal = this.toggleVideoModal.bind(this)
+
         this.handleSongDescriptionChange = this.handleSongDescriptionChange.bind(this)
         this.handleSongTitleChange = this.handleSongTitleChange.bind(this)
         this.handleThumbnailFileChange = this.handleThumbnailFileChange.bind(this)
@@ -34,6 +36,8 @@ class Profile extends React.Component {
 
         this.state = {
             uploadModal: false,
+            videoModal: false,
+
             songTitle: '',
             songDescription: '',
             storageRef: firebase.storage().ref(),
@@ -47,7 +51,7 @@ class Profile extends React.Component {
             uploadPercentage: 0,
             shouldUploadVideoInfo: false,
 
-            uploaded_videos: []
+            uploaded_videos: [],
         }
     }
 
@@ -122,6 +126,12 @@ class Profile extends React.Component {
     toggleUploadModal() {
         this.setState({
             uploadModal: !this.state.uploadModal
+        })
+    }
+
+    toggleVideoModal(video) {
+        this.setState({
+            videoModal: !this.state.videoModal,
         })
     }
 
@@ -221,21 +231,22 @@ class Profile extends React.Component {
             <>
                 <Header />
                 <Container className="mt--7" fluid>
-                    {/* <Modal
+                    <Modal
                         className="modal-dialog-centered"
-                        isOpen={this.state.uploadModal}
-                        toggle={this.toggleUploadModal}
+                        isOpen={this.state.videoModal}
+                        toggle={this.toggleVideoModal}
+                        size="lg"
                     >
                         <div className="modal-body p-0">
                             <Card className="bg-secondary shadow border-0">
                                 <CardHeader className="bg-transparent">
-                                    <span>Upload Music Video</span>
+                                    <span>Video Modal</span>
                                     <button
                                         aria-label="Close"
                                         className="close"
                                         data-dismiss="modal"
                                         type="button"
-                                        onClick={this.toggleUploadModal}
+                                        onClick={this.toggleVideoModal}
                                     >
                                         <span aria-hidden={true}>×</span>
                                     </button>
@@ -245,13 +256,13 @@ class Profile extends React.Component {
                                         <i className="ni ni-satisfied ni-3x" />
                                         <h4 className="heading mt-4">Hooray!</h4>
                                         <p>
-                                            Your awesome song has been uploaded
+                                            This is video modal
                                         </p>
                                     </div>
                                 </CardBody>
                             </Card>
                         </div>
-                    </Modal> */}
+                    </Modal>
                     
                     <Modal
                         className="modal-dialog-centered"
@@ -480,7 +491,11 @@ class Profile extends React.Component {
                     </Col>
                     <Col className="order-xl-1" xl="8">
                         {this.state.uploaded_videos.map((video, index) => (
-                            <Card className="bg-secondary shadow" style={{ marginBottom: '10px' }}>
+                            <Card 
+                                className="bg-secondary shadow" 
+                                style={{ marginBottom: '10px' }} 
+                                onClick={this.toggleVideoModal}
+                            >
                                 <CardHeader>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <span className="avatar avatar-sm rounded-circle">
