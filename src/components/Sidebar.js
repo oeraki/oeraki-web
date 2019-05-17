@@ -34,6 +34,7 @@ import {
     Row,
     Col
 } from "reactstrap";
+import firebase from '../firebase';
 
 var ps;
 
@@ -44,7 +45,32 @@ class Sidebar extends React.Component {
     constructor(props) {
         super(props);
         this.activeRoute.bind(this);
+        this.state = {
+            user: firebase.auth().currentUser,
+            databaseRef: firebase.firestore(),
+            userMetadata: {
+                avatar: '',
+                username: ''
+            },
+        }
     }
+
+    componentDidMount() {
+        let db = this.state.databaseRef
+        let self = this
+
+        // Listener on current user's metadata
+        db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
+            console.log("Current userMetadata: ", doc.data());
+            self.setState({
+                userMetadata: {
+                    avatar: doc.data().avatar,
+                    username: doc.data().username
+                }
+            })
+        });
+    }
+    
     // verifies if routeName is the one active (in browser input)
     activeRoute(routeName) {
         return this.props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
@@ -141,7 +167,7 @@ class Sidebar extends React.Component {
                                     <span className="avatar avatar-sm rounded-circle">
                                         <img
                                             alt="..."
-                                            src={require("../assets/img/theme/team-1-800x800.jpg")}
+                                            src={this.state.userMetadata.avatar}
                                         />
                                     </span>
                                 </Media>
