@@ -35,7 +35,7 @@ class App extends Component {
           <BrowserRouter>
             <Switch>
               <Route path="/dashboard" render={props => <Dashboard {...props} />} />
-              <Redirect from="/" to="/dashboard/feed" />
+              <Redirect from="/" to="/dashboard/profile" />
             </Switch>
           </BrowserRouter>
         }

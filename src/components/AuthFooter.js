@@ -19,7 +19,7 @@ class Login extends React.Component {
                                         href="https://www.creative-tim.com?ref=adr-auth-footer"
                                         target="_blank"
                                     >
-                                        Oeraki
+                                        Corner
                                     </a>
                                 </div>
                             </Col>
@@ -30,7 +30,7 @@ class Login extends React.Component {
                                             href="https://www.creative-tim.com?ref=adr-auth-footer"
                                             target="_blank"
                                         >
-                                            Oeraki
+                                            Corner
                                         </NavLink>
                                     </NavItem>
                                     <NavItem>
