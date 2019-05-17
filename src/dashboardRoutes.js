@@ -6,6 +6,7 @@
 // import Feed from './components/Feed';
 import Profile from './components/Profile';
 import Events from './components/Events';
+import Collaboration from './components/Collaboration';
 
 var routes = [
     // {
@@ -29,6 +30,12 @@ var routes = [
         component: Events,
         layout: "/dashboard"
     },
-
+    {
+        path: "/collaboration",
+        name: "Collaboration",
+        icon: "ni ni-world text-primary",
+        component: Collaboration,
+        layout: "/dashboard"
+    },
 ];
 export default routes;

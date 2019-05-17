@@ -18,7 +18,7 @@ class DashboardFooter extends React.Component {
                                 rel="noopener noreferrer"
                                 target="_blank"
                             >
-                                Creative Tim
+                                Corner
                             </a>
                         </div>
                     </Col>
@@ -31,7 +31,7 @@ class DashboardFooter extends React.Component {
                                     rel="noopener noreferrer"
                                     target="_blank"
                                 >
-                                    Creative Tim
+                                    Corner
                             </NavLink>
                             </NavItem>
 
