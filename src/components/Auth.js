@@ -45,8 +45,8 @@ class Auth extends React.Component {
                                     <Col lg="5" md="6">
                                         <h1 className="text-white">Hey there artist!</h1>
                                         <p className="text-lead text-light">
-                                            Get ready for an unlimited music collaboration experience
-                    </p>
+                                            Your next music opportunity is right around the corner
+                                        </p>
                                     </Col>
                                 </Row>
                             </div>

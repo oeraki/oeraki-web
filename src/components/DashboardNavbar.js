@@ -20,6 +20,35 @@ import {
 } from "reactstrap";
 
 class DashboardNavbar extends React.Component {
+    constructor(props) {
+        super(props)
+        
+        this.state = {
+            user: firebase.auth().currentUser,
+            databaseRef: firebase.firestore(),
+            userMetadata: {
+                avatar: '',
+                username: ''
+            },
+        }
+    }
+
+    componentDidMount() {
+        let db = this.state.databaseRef
+        let self = this
+
+        // Listener on current user's metadata
+        db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
+            console.log("Current userMetadata: ", doc.data());
+            self.setState({
+                userMetadata: {
+                    avatar: doc.data().avatar,
+                    username: doc.data().username
+                }
+            })
+        });
+    }
+
     logout() {
         firebase.auth().signOut()
             .then(() => {
@@ -63,12 +92,12 @@ class DashboardNavbar extends React.Component {
                                         <span className="avatar avatar-sm rounded-circle">
                                             <img
                                                 alt="..."
-                                                src={require("../assets/img/theme/team-4-800x800.jpg")}
+                                                src={this.state.userMetadata.avatar}
                                             />
                                         </span>
                                         <Media className="ml-2 d-none d-lg-block">
                                             <span className="mb-0 text-sm font-weight-bold">
-                                                Jessica Jones
+                                                {this.state.userMetadata.username}
                                         </span>
                                         </Media>
                                     </Media>

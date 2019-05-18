@@ -50,7 +50,7 @@ class Dashboard extends React.Component {
                     routes={routes}
                     logo={{
                         innerLink: "/dashboard/feed",
-                        imgSrc: require("../assets/img/brand/argon-react.png"),
+                        imgSrc: require("../assets/img/brand/corner-logo-teal.png"),
                         imgAlt: "..."
                     }}
                 />

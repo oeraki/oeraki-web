@@ -14,7 +14,8 @@ import {
     Modal,
     Input,
     FormGroup,
-    Progress
+    Progress,
+    Badge
 } from "reactstrap";
 import Dropzone from 'react-dropzone'
 import firebase from '../firebase'
@@ -49,6 +50,13 @@ class Profile extends React.Component {
             storageRef: firebase.storage().ref(),
             databaseRef: firebase.firestore(),
             user: firebase.auth().currentUser,
+            userMetadata: {
+                address: '',
+                description: '',
+                username: '',
+                skills: [],
+                avatar: ''
+            },
             
             uploadStatus: null,
             uploadPercentage: 0,
@@ -90,6 +98,7 @@ class Profile extends React.Component {
             let db = this.state.databaseRef
             db.collection("users").doc(this.state.user.uid).collection("videos").add({
                 owner: this.state.user.uid,
+                ownerName: this.state.userMetadata.username,
                 thumbnail: this.state.thumbnailURL,
                 videoSource: this.state.videoURL,
                 comments: [],
@@ -100,7 +109,8 @@ class Profile extends React.Component {
                     '15': 0
                 },
                 title: this.state.songTitle,
-                description: this.state.songDescription
+                description: this.state.songDescription,
+                timestamp: Date.now()
             })
             .then(function (docRef) {
                 console.log("Document written with ID: ", docRef.id);
@@ -116,8 +126,7 @@ class Profile extends React.Component {
         let self = this
 
         // Listener on current user's uploaded videos
-        db.collection("users").doc(this.state.user.uid).collection("videos")
-            .onSnapshot(function (querySnapshot) {
+        db.collection("users").doc(this.state.user.uid).collection("videos").onSnapshot(function (querySnapshot) {
                 var uploaded_videos = [];
                 querySnapshot.forEach(function (doc) {
                     uploaded_videos.push(doc.data());
@@ -125,7 +134,21 @@ class Profile extends React.Component {
                 self.setState({
                     uploaded_videos: uploaded_videos
                 })
-            });
+        });
+
+        // Listener on current user's metadata
+        db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
+            console.log("Current userMetadata: ", doc.data());
+            self.setState({
+                userMetadata: {
+                    skills: doc.data().skills,
+                    username: doc.data().username,
+                    address: doc.data().address,
+                    description: doc.data().description,
+                    avatar: doc.data().avatar
+                }
+            })
+        });
     }
 
     toggleUploadModal() {
@@ -240,6 +263,7 @@ class Profile extends React.Component {
             alignItems: 'center',
             justifyContent: 'center'
         }
+
         return (
             <>
                 <Header />
@@ -444,7 +468,7 @@ class Profile extends React.Component {
                                         <img
                                         alt="..."
                                         className="rounded-circle"
-                                        src={require("../assets/img/theme/team-4-800x800.jpg")}
+                                        src={this.state.userMetadata.avatar}
                                         />
                                     </a>
                                     </div>
@@ -476,16 +500,16 @@ class Profile extends React.Component {
                             <Row>
                                 <div className="col">
                                 <div className="card-profile-stats d-flex justify-content-center mt-md-5">
-                                    <div>
+                                    {/* <div>
                                     <span className="heading">22</span>
                                     <span className="description">Fans</span>
                                     </div>
                                     <div>
                                     <span className="heading">10</span>
                                     <span className="description">Albums</span>
-                                    </div>
+                                    </div> */}
                                     <div>
-                                    <span className="heading">89</span>
+                                    <span className="heading">{this.state.uploaded_videos.length}</span>
                                     <span className="description">Songs</span>
                                     </div>
                                 </div>
@@ -493,16 +517,18 @@ class Profile extends React.Component {
                             </Row>
                             <div className="text-center">
                                 <h3>
-                                Jessica Jones
-                                <span className="font-weight-light">, 27</span>
+                                {this.state.userMetadata.username}
+                                {/* <span className="font-weight-light">, 27</span> */}
                                 </h3>
                                 <div className="h5 font-weight-300">
                                 <i className="ni location_pin mr-2" />
-                                Bucharest, Romania
+                                {this.state.userMetadata.address}
                                 </div>
                                 <div className="h5 mt-4">
                                 <i className="ni business_briefcase-24 mr-2" />
-                                Songwriter - Rapper - Producer
+                                {this.state.userMetadata.skills.length > 0 && this.state.userMetadata.skills.map((skill, index) => (
+                                    <span key={index}><Badge color="primary">{skill}</Badge> </span>
+                                ))}
                                 </div>
                                 {/* <div>
                                 <i className="ni education_hat mr-2" />
@@ -510,7 +536,7 @@ class Profile extends React.Component {
                                 </div> */}
                                 <hr className="my-4" />
                                 <p>
-                                I love making independent music. Eager to collaborate with like-minded artists
+                                {this.state.userMetadata.description}
                                 </p>
                                 <a href="#pablo" onClick={e => e.preventDefault()}>
                                 See reviews
@@ -520,24 +546,29 @@ class Profile extends React.Component {
                         </Card>
                     </Col>
                     <Col className="order-xl-1" xl="8">
-                        {this.state.uploaded_videos.length > 0 && this.state.uploaded_videos.map((video) => (
+                        {this.state.uploaded_videos.length > 0 && this.state.uploaded_videos.map((video, index) => (
                             <Card 
                                 className="bg-secondary shadow" 
                                 style={{ marginBottom: '10px' }} 
                                 onClick={() => this.setCurrentVideo(video)}
+                                key={index}
                             >
                                 <CardHeader>
                                     <div style={{ display: 'flex', alignItems: 'center' }}>
                                         <span className="avatar avatar-sm rounded-circle">
                                             <img
                                                 alt="..."
-                                                src={require("../assets/img/theme/team-4-800x800.jpg")}
+                                                src={this.state.userMetadata.avatar}
                                             />
                                         </span>
                                         <span style={{ marginLeft: '10px' }}>
-                                            <span className="mb-0 text-sm font-weight-bold"> Jessica Jones</span>
-                                            <span className="mb-0 text-sm"> uploaded</span>
-                                            <span className="mb-0 text-sm text-muted"> 14 mins ago</span>
+                                            <span className="mb-0 text-sm font-weight-bold"> {video.ownerName}</span>
+                                            <span className="mb-0 text-sm"> uploaded on </span>
+                                            <span className="mb-0 text-sm text-muted"> 
+                                                {new Date(video.timestamp).getUTCDate()}/
+                                                {new Date(video.timestamp).getUTCMonth()+1}/
+                                                {new Date(video.timestamp).getUTCFullYear()}
+                                            </span>
                                         </span>
                                     </div>
                                 </CardHeader>
@@ -551,10 +582,10 @@ class Profile extends React.Component {
                                                 {video.title}
                                             </CardTitle>
                                             <span className="mt-3 mb-0 text-muted text-sm">
-                                                by Childish Gambino<br></br>
+                                                by {video.ownerName}<br></br>
                                                 {video.views} views<br></br>
-                                                3:30
-                                        </span>
+                                                {/* 3:30 */}
+                                            </span>
                                         </Col>
                                     </Row>
                                 </CardBody>
