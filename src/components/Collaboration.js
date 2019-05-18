@@ -394,7 +394,7 @@ class Collaboration extends React.Component {
                             <Col lg="12" xl="12">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardImg
-                                        src='https://img.stomp.com.sg/s3fs-public/styles/3x2/public/images/2017/03/nus.jpg?itok=jzU2rwCm'
+                                    src='https://d1m37zmi87nupc.cloudfront.net/wp-content/uploads/2018/03/07100957/nus_open_day_2018_social.jpg'
                                         top
                                     />
                                     <CardBody>
