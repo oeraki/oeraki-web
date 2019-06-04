@@ -1,6 +1,5 @@
 import React from "react";
 import firebase from '../firebase';
-
 // reactstrap components
 import {
     Button,
@@ -14,8 +13,12 @@ import {
     InputGroupText,
     InputGroup,
     Row,
-    Col
+    Col,
+    Modal,
+    ModalHeader, 
+    ModalBody, 
 } from "reactstrap";
+import SignUpPage from './SignUp';
 
 class Login extends React.Component {
     constructor(props) {
@@ -27,11 +30,13 @@ class Login extends React.Component {
 
         this.handleEmailChange = this.handleEmailChange.bind(this)
         this.handlePasswordChange = this.handlePasswordChange.bind(this)
+        this.toggle = this.toggle.bind(this);
 
         this.state = {
             email: '',
             password: '',
-            user: null
+            user: null,
+            modal: false
         }
     }
 
@@ -83,7 +88,16 @@ class Login extends React.Component {
                 let messageToShow = errorCode + ': ' + errorMessage
                 alert(messageToShow)
             });
+    }
 
+    signUpWithEmail = () => {
+        console.log('signing up user now')
+    }
+
+    toggle() {
+        this.setState(prevState => ({
+          modal: !prevState.modal
+        }));
     }
 
     logout() {
@@ -205,13 +219,15 @@ class Login extends React.Component {
                                 </a>
                             </Col>
                             <Col className="text-right" xs="6">
-                                <a
-                                    className="text-light"
-                                    href="#pablo"
-                                    onClick={e => e.preventDefault()}
-                                >
-                                    <small>Create new account</small>
-                                </a>
+                            <div>
+                                <Button onClick={this.toggle}>Sign Up</Button>
+                                <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                                    <ModalHeader toggle={this.toggle}>Sign Up</ModalHeader>
+                                    <ModalBody>
+                                        <SignUpPage />
+                                    </ModalBody>
+                                </Modal>
+                            </div>
                             </Col>
                         </Row>
                     </Col>

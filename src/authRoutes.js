@@ -5,6 +5,7 @@
 import Login from './components/Login';
 import Register from './components/Register';
 import Feed from './components/Feed';
+import SignUp from './components/SignUp';
 // import Tables from "views/examples/Tables.jsx";
 // import Icons from "views/examples/Icons.jsx";
 
@@ -28,6 +29,13 @@ var routes = [
         name: "Register",
         icon: "ni ni-circle-08 text-pink",
         component: Register,
+        layout: "/auth"
+    },
+    {
+        path: "/sign-up",
+        name: "Sign Up",
+        icon: "ni ni-circle-08 text-pink",
+        component: SignUp,
         layout: "/auth"
     }
 ];
