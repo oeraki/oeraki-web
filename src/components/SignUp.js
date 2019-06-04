@@ -6,13 +6,13 @@ import { compose } from 'recompose';
 import * as ROUTES from '../authRoutes'
 
 const INITIAL_STATE = {
-    username: '',
-    email: '',
-    passwordOne: '',
-    passwordTwo: '',
-    error: null,
-  };
-  
+  username: '',
+  email: '',
+  passwordOne: '',
+  passwordTwo: '',
+  error: null,
+};
+
 
 const SignUpPage = () => (
   <div>
@@ -21,30 +21,30 @@ const SignUpPage = () => (
 );
 
 class SignUpFormBase extends Component {
-    constructor(props) {
-        super(props);
-        this.state = { ...INITIAL_STATE };
-    }
+  constructor(props) {
+    super(props);
+    this.state = { ...INITIAL_STATE };
+  }
 
-    onChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
-      };
+  onChange = event => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
 
-      onSubmit = (event) => {
-        const { username, email, passwordOne } = this.state;
-    
-        this.props.firebase
-          .doCreateUserWithEmailAndPassword(email, passwordOne)
-          .then(authUser => {
-            this.setState({ ...INITIAL_STATE });
-            this.props.history.push(ROUTES.default[0].path);
-          })
-          .catch(error => {
-            this.setState({ error });
-          });
-    
-        event.preventDefault();
-      }
+  onSubmit = (event) => {
+    const { username, email, passwordOne } = this.state;
+
+    this.props.firebase
+      .doCreateUserWithEmailAndPassword(email, passwordOne)
+      .then(authUser => {
+        this.setState({ ...INITIAL_STATE });
+        this.props.history.push(ROUTES.default[0].path);
+      })
+      .catch(error => {
+        this.setState({ error });
+      });
+
+    event.preventDefault();
+  }
 
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
@@ -54,21 +54,21 @@ class SignUpFormBase extends Component {
     console.log(ROUTES.default[3].path)
 
     const {
-        username,
-        email,
-        passwordOne,
-        passwordTwo,
-        error,
-      } = this.state;
+      username,
+      email,
+      passwordOne,
+      passwordTwo,
+      error,
+    } = this.state;
 
-      const isInvalid =
+    const isInvalid =
       passwordOne !== passwordTwo ||
       passwordOne === '' ||
       email === '' ||
       username === '';
 
     return (
-       <form onSubmit={this.onSubmit}>
+      <form onSubmit={this.onSubmit}>
         <input
           name="username"
           value={username}
@@ -101,8 +101,8 @@ class SignUpFormBase extends Component {
           placeholder="Confirm Password"
         />
         <br />
-            <button disabled={isInvalid} type="submit">
-                Sign Up
+        <button disabled={isInvalid} type="submit">
+          Sign Up
         </button>
         {error && <p>{error.message}</p>}
       </form>
@@ -111,9 +111,9 @@ class SignUpFormBase extends Component {
 }
 
 const SignUpForm = compose(
-    withRouter,
-    withFirebase,
-  )(SignUpFormBase);
+  withRouter,
+  withFirebase,
+)(SignUpFormBase);
 
 const SignUpLink = () => (
   <p>
