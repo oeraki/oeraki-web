@@ -35,7 +35,7 @@ class SignUpFormBase extends Component {
     console.log(username, email, passwordOne)
 
     firebase.auth()
-      .doCreateUserWithEmailAndPassword(email, passwordOne)
+      .createUserWithEmailAndPassword(email, passwordOne)
       .then(authUser => {
         this.setState({ ...INITIAL_STATE });
       })
