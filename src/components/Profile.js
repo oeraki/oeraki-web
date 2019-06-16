@@ -276,25 +276,61 @@ class Profile extends React.Component {
 
     // START: Methods for Editing Profile
     toggleEditModal() {
+        let self = this
+        let db = this.state.databaseRef
 
+        // Get latest info for current User Profile
+        db.collection("users").doc(this.state.user.uid).get().then(function (doc) {
+            console.log("Current userMetadata: ", doc.data());
+            self.setState({
+                userMetadata: {
+                    skills: doc.data().skills,
+                    username: doc.data().username,
+                    address: doc.data().address,
+                    description: doc.data().description,
+                    avatar: doc.data().avatar
+                },
+                editModal: !self.state.editModal,
+            })
+        });
     }
-    handleProfileDescriptionChange() {
-
+    handleProfileDescriptionChange(event) {
+        let new_userMetadata = this.state.userMetadata
+        new_userMetadata.description = event.target.value
+        this.setState({ userMetadata: new_userMetadata })
     }
-    handleAddressChange() {
-
+    handleAddressChange(event) {
+        let new_userMetadata = this.state.userMetadata
+        new_userMetadata.address = event.target.value
+        this.setState({ userMetadata: new_userMetadata })
     }
-    handleAvatarChange() {
-
+    handleAvatarChange(event) {
+        let new_userMetadata = this.state.userMetadata
+        new_userMetadata.avatar = event.target.value
+        this.setState({ userMetadata: new_userMetadata })
     }
-    handleSkillsChange() {
-
+    handleSkillsChange(event) {
+        let new_userMetadata = this.state.userMetadata
+        new_userMetadata.skills = event.target.value.split(',')
+        this.setState({ userMetadata: new_userMetadata })
     }
-    handleUsernameChange() {
-
+    handleUsernameChange(event) {
+        let new_userMetadata = this.state.userMetadata
+        new_userMetadata.username = event.target.value
+        this.setState({ userMetadata: new_userMetadata })
     }
     submitEdit() {
-
+        let db = this.state.databaseRef
+        db.collection("users").doc(this.state.user.uid).update({
+            skills: this.state.userMetadata.skills,
+            username: this.state.userMetadata.username,
+            address: this.state.userMetadata.address,
+            description: this.state.userMetadata.description,
+            avatar: this.state.userMetadata.avatar
+        });
+        this.setState({
+            editModal: !this.state.editModal
+        })
     }
     // END: Methods for Editing Profile
 
@@ -392,48 +428,56 @@ class Profile extends React.Component {
                                         <label className="form-control-label">Username</label>
                                         <Input
                                             className="form-control-alternative"
-                                            placeholder="Title of your song"
+                                            placeholder="Your new username"
                                             type="text"
                                             onChange={this.handleUsernameChange}
-                                            value={this.state.profileUsername}
+                                            value={this.state.userMetadata.username}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <label className="form-control-label">Description</label>
                                         <Input
                                             className="form-control-alternative"
-                                            placeholder="A few words about your song ..."
+                                            placeholder="A few words about yourself ..."
                                             rows="4"
                                             type="textarea"
                                             onChange={this.handleProfileDescriptionChange}
-                                            value={this.state.profileDescription}
+                                            value={this.state.userMetadata.description}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <label className="form-control-label">Address</label>
                                         <Input
                                             className="form-control-alternative"
-                                            placeholder="A few words about your song ..."
+                                            placeholder="Where are you now?"
                                             rows="4"
                                             type="textarea"
                                             onChange={this.handleAddressChange}
-                                            value={this.state.profileAddress}
+                                            value={this.state.userMetadata.address}
                                         />
                                     </FormGroup>
                                     <FormGroup>
                                         <label className="form-control-label">Skills</label>
                                         <Input
                                             className="form-control-alternative"
-                                            placeholder="A few words about your song ..."
+                                            placeholder="Tell us about your skills"
                                             rows="4"
                                             type="textarea"
                                             onChange={this.handleSkillsChange}
-                                            value={this.state.profileSkills}
+                                            value={this.state.userMetadata.skills}
                                         />
                                     </FormGroup>
                                     <FormGroup>
-                                        <label className="form-control-label">Avatar</label>
-                                        <Dropzone
+                                        <label className="form-control-label">Avatar (Url)</label>
+                                        <Input
+                                            className="form-control-alternative"
+                                            placeholder="Put the url of your new avatar picture here (Remember, the url should be valid)"
+                                            rows="4"
+                                            type="textarea"
+                                            onChange={this.handleAvatarChange}
+                                            value={this.state.userMetadata.avatar}
+                                        />
+                                        {/* <Dropzone
                                             onDrop={this.handleAvatarChange}
                                             multiple={false}
                                         >
@@ -443,7 +487,7 @@ class Profile extends React.Component {
                                                         <input {...getInputProps()} />
                                                         <div style={fileInputStyle}>
                                                             {!this.state.profileAvatar &&
-                                                                <span><i className="ni ni-image"></i> Click to select file</span>
+                                                                <span><i className="ni ni-image"></i> Click to change your avatar</span>
                                                             }
                                                             {this.state.profileAvatar &&
                                                                 <span>{this.state.profileAvatar.name}</span>
@@ -452,7 +496,7 @@ class Profile extends React.Component {
                                                     </div>
                                                 </section>
                                             )}
-                                        </Dropzone>
+                                        </Dropzone> */}
                                     </FormGroup>
                                     
                                     <div className="text-center">
@@ -460,9 +504,9 @@ class Profile extends React.Component {
                                             className="my-4"
                                             color="primary"
                                             type="button"
-                                            onClick={this.uploadSong}
+                                            onClick={this.submitEdit}
                                         >
-                                            Upload
+                                            Save Profile
                                     </Button>
                                     </div>
                                 </CardBody>
@@ -626,7 +670,7 @@ class Profile extends React.Component {
                                         <div className="card-profile-image">
                                         <a href="#pablo" onClick={e => e.preventDefault()}>
                                             <img
-                                            alt="..."
+                                            alt="Changing Avatar..."
                                             className="rounded-circle"
                                             src={this.state.userMetadata.avatar}
                                             />
@@ -649,7 +693,7 @@ class Profile extends React.Component {
                                         className="float-right"
                                         color="default"
                                         href="#pablo"
-                                        onClick={e => e.preventDefault()}
+                                        onClick={this.toggleEditModal}
                                         size="sm"
                                         >
                                         Edit profile
