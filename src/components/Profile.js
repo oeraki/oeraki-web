@@ -24,29 +24,53 @@ class Profile extends React.Component {
     constructor(props) {
         super(props)
 
-        this.toggleUploadModal = this.toggleUploadModal.bind(this)
+        // START: Listeners for Opening Video Modal
         this.toggleVideoModal = this.toggleVideoModal.bind(this)
         this.setCurrentVideo = this.setCurrentVideo.bind(this)
+        // END: Listeners for Opening Video Modal
 
+        // START: Listeners for Uploading Song
+        this.toggleUploadModal = this.toggleUploadModal.bind(this)
         this.handleSongDescriptionChange = this.handleSongDescriptionChange.bind(this)
         this.handleSongTitleChange = this.handleSongTitleChange.bind(this)
         this.handleThumbnailFileChange = this.handleThumbnailFileChange.bind(this)
         this.handleVideoFileChange = this.handleVideoFileChange.bind(this)
-
         this.uploadSong = this.uploadSong.bind(this)
         this.uploadAgain = this.uploadAgain.bind(this)
+        // END: Listeners for Uploading Song
+
+        // START: Listeners for Editing Profile
+        this.toggleEditModal = this.toggleEditModal.bind(this)
+        this.handleProfileDescriptionChange = this.handleProfileDescriptionChange.bind(this)
+        this.handleAddressChange = this.handleAddressChange.bind(this)
+        this.handleAvatarChange = this.handleAvatarChange.bind(this)
+        this.handleSkillsChange = this.handleSkillsChange.bind(this)
+        this.handleUsernameChange = this.handleUsernameChange.bind(this)
+        this.submitEdit = this.submitEdit.bind(this)
+        // END: Listeners for Editing Profile
 
         this.state = {
+            // START: States for Uploading Song
             uploadModal: false,
-            videoModal: false,
-
             songTitle: '',
             songDescription: '',
             thumbnailFile: null,
             videoFile: null,
-            thumbnailURL: '',
-            videoURL: '',
-            
+            uploadStatus: null,
+            uploadPercentage: 0,
+            shouldUploadVideoInfo: false,
+            // END: States for Uploading Song
+
+            // START: States for Editing Profile
+            editModal: false,
+            profileDescription: '',
+            profileAddress: '',
+            profileAvatar: null,
+            profileSkills: [],
+            profileUsername: '',
+            // END: States for Editing Profile
+
+            // START: States for Firebase + Current User
             storageRef: firebase.storage().ref(),
             databaseRef: firebase.firestore(),
             user: firebase.auth().currentUser,
@@ -57,17 +81,19 @@ class Profile extends React.Component {
                 skills: [],
                 avatar: ''
             },
+            // END: States for Firebase + Current User
             
-            uploadStatus: null,
-            uploadPercentage: 0,
-            shouldUploadVideoInfo: false,
-
+            // START: States for uploaded video list
             uploaded_videos: [],
-
-            current_video: null
+            current_video: null,
+            videoModal: false,
+            thumbnailURL: '',
+            videoURL: '',
+            // END: States for uploaded video list
         }
     }
 
+    // START: Methods for REACT Life Cycle
     componentDidUpdate(prevProps, prevState, snapshot) {
         // If there were changes on both thumbnailURL and videoURL
         if (this.state.shouldUploadVideoInfo && this.state.shouldUploadVideoInfo !== prevState.shouldUploadVideoInfo) {
@@ -120,7 +146,6 @@ class Profile extends React.Component {
             })
         }
     }
-
     componentDidMount() {
         let db = this.state.databaseRef
         let self = this
@@ -150,49 +175,41 @@ class Profile extends React.Component {
             })
         });
     }
+    // END: Methods for REACT Life Cycle
 
-    toggleUploadModal() {
-        this.setState({
-            uploadModal: !this.state.uploadModal
-        })
-    }
-
+    // START: Methods for Opening Video Modal
     toggleVideoModal(video) {
         this.setState({
             videoModal: !this.state.videoModal,
         })
     }
-
-    handleSongTitleChange(event) {
-        this.setState({ songTitle: event.target.value })
+    setCurrentVideo(video) {
+        console.log(video)
+        this.setState({
+            current_video: video,
+            videoModal: !this.state.videoModal,
+        })
     }
+    // END: Methods for Opening Video Modal
 
+    // START: Methods for Uploading Song
+    toggleUploadModal() {
+        this.setState({
+            uploadModal: !this.state.uploadModal
+        })
+    }
     handleSongDescriptionChange(event) {
         this.setState({ songDescription: event.target.value })
     }
-
+    handleSongTitleChange(event) {
+        this.setState({ songTitle: event.target.value })
+    }
     handleThumbnailFileChange(files) {
         this.setState({ thumbnailFile: files[0] })
     }
-
     handleVideoFileChange(files) {
         this.setState({ videoFile: files[0] })
     }
-
-    uploadAgain() {
-        this.setState({ 
-            uploadStatus: null, 
-            uploadPercentage: 0,
-            thumbnailFile: null,
-            videoFile: null,
-            songTitle: '',
-            songDescription: '',
-            thumbnailURL: '',
-            videoURL: '',
-            shouldUploadVideoInfo: false
-        })
-    }
-
     uploadSong() {
         console.log(this.state.songTitle)
         console.log(this.state.songDescription)
@@ -217,7 +234,7 @@ class Profile extends React.Component {
         }, function () {
             thumbnailUploadTask.snapshot.ref.getDownloadURL().then(function (downloadURL) {
                 console.log('Thumbnail file available at', downloadURL)
-                self.setState({ thumbnailURL: downloadURL})
+                self.setState({ thumbnailURL: downloadURL })
                 if (self.state.thumbnailURL !== '' && self.state.videoURL !== '') {
                     self.setState({ shouldUploadVideoInfo: true })
                 }
@@ -242,14 +259,44 @@ class Profile extends React.Component {
         })
 
     }
-
-    setCurrentVideo(video) {
-        console.log(video)
+    uploadAgain() {
         this.setState({
-            current_video: video,
-            videoModal: !this.state.videoModal,
+            uploadStatus: null,
+            uploadPercentage: 0,
+            thumbnailFile: null,
+            videoFile: null,
+            songTitle: '',
+            songDescription: '',
+            thumbnailURL: '',
+            videoURL: '',
+            shouldUploadVideoInfo: false
         })
     }
+    // END: Methods for Uploading Song
+
+    // START: Methods for Editing Profile
+    toggleEditModal() {
+
+    }
+    handleProfileDescriptionChange() {
+
+    }
+    handleAddressChange() {
+
+    }
+    handleAvatarChange() {
+
+    }
+    handleSkillsChange() {
+
+    }
+    handleUsernameChange() {
+
+    }
+    submitEdit() {
+
+    }
+    // END: Methods for Editing Profile
 
     render() {
         const fileInputStyle = {
