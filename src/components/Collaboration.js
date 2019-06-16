@@ -218,7 +218,7 @@ class Collaboration extends React.Component {
                             <Col lg="6" xl="3">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardImg
-                                    src="https://firebasestorage.googleapis.com/v0/b/oeraki-f85a5.appspot.com/o/images%2FJames%20Liu.jpg?alt=media&token=2c930838-c7d6-47bd-9f49-93eb1b77f463"
+                                    src="https://firebasestorage.googleapis.com/v0/b/oeraki-f85a5.appspot.com/o/images%2FJames%20Liu.jpg?alt=media&token=04c1df1f-10ac-4ab0-8cc2-8641ff75766a"
                                         top
                                     />
                                     <CardBody>

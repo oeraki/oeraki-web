@@ -247,7 +247,7 @@ class Events extends React.Component {
                             <Col lg="6" xl="3">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardImg
-                                        src='https://www.eggcreatives.com/wp-content/uploads/2016/06/hangar2.jpg'
+                                    src='https://pro2-bar-s3-cdn-cf.myportfolio.com/e3e85de9d861e72b6ff6b2d3b4476512/b4a8bcb2271aa0af01b14320_rw_1200.jpg?h=45c1012c7774c3714a7c2e9296c3ec03'
                                         top
                                     />
                                     <CardBody>
@@ -317,7 +317,7 @@ class Events extends React.Component {
                             <Col lg="6" xl="3">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardImg
-                                    src='http://www.ntu.edu.sg/DiscoverURECA/PublishingImages/2014b.jpg'
+                                    src='http://news.ntu.edu.sg/CoE-CE/PublishingImages/2017/NTUOpenHouse2017_webimg1.jpg'
                                         top
                                     />
                                     <CardBody>
