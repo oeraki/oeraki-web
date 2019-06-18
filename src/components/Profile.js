@@ -50,6 +50,10 @@ class Profile extends React.Component {
         this.submitEdit = this.submitEdit.bind(this)
         // END: Listeners for Editing Profile
 
+        // START: Listeners for Music Video Setting
+        this.removeVideo = this.removeVideo.bind(this)
+        // END: Listeners for Music Video Setting
+
         this.state = {
             // START: States for Uploading Song
             uploadModal: false,
@@ -155,7 +159,9 @@ class Profile extends React.Component {
         db.collection("users").doc(this.state.user.uid).collection("videos").onSnapshot(function (querySnapshot) {
                 var uploaded_videos = [];
                 querySnapshot.forEach(function (doc) {
-                    uploaded_videos.push(doc.data());
+                    let uploaded_video = doc.data()
+                    uploaded_video['id'] = doc.id
+                    uploaded_videos.push(uploaded_video);
                 });
                 self.setState({
                     uploaded_videos: uploaded_videos
@@ -337,6 +343,25 @@ class Profile extends React.Component {
         })
     }
     // END: Methods for Editing Profile
+
+    // START: Methods for Music Video Setting
+    removeVideo(video) {
+        if (window.confirm('Are you sure you want to remove this music video?')) {
+            let db = this.state.databaseRef
+            db.collection("users")
+                .doc(this.state.user.uid)
+                .collection("videos")
+                .doc(video.id)
+            .delete().then(function () {
+                console.log('Music Video Removed');
+            }).catch(function (error) {
+                console.error("Error removing Music Video: ", error);
+            });
+        } else {
+            console.log('Music Video Removal cancelled')
+        }
+    }
+    // END: Methods for Music Video Setting
 
     render() {
         const fileInputStyle = {
@@ -763,11 +788,11 @@ class Profile extends React.Component {
                             </Card>
                         </Col>
                         <Col className="order-xl-1" xl="8">
+                            {/* START: List of uploaded videos */}
                             {this.state.uploaded_videos.length > 0 && this.state.uploaded_videos.map((video, index) => (
                                 <Card 
                                     className="bg-secondary shadow" 
                                     style={{ marginBottom: '10px' }} 
-                                    onClick={() => this.setCurrentVideo(video)}
                                     key={index}
                                 >
                                     <CardHeader>
@@ -792,7 +817,11 @@ class Profile extends React.Component {
                                     <CardBody>
                                         <Row>
                                             <Col xs='6'>
-                                                <CardImg src={video.thumbnail}></CardImg>
+                                                <CardImg 
+                                                    src={video.thumbnail}
+                                                    onClick={() => this.setCurrentVideo(video)}
+                                                >
+                                                </CardImg>
                                             </Col>
                                             <Col xs='auto'>
                                                 <CardTitle className="font-weight-bold mb-0">
@@ -802,6 +831,12 @@ class Profile extends React.Component {
                                                     by {video.ownerName}<br></br>
                                                     {video.views} views<br></br>
                                                     {/* 3:30 */}
+                                                    <Button color="secondary" size="sm" 
+                                                        type="button"
+                                                        onClick={() => this.removeVideo(video)}
+                                                    >
+                                                        <i className="fas fa-trash-alt"></i> Remove
+                                                    </Button>
                                                 </span>
                                             </Col>
                                         </Row>
@@ -824,6 +859,7 @@ class Profile extends React.Component {
                                     </CardBody>
                                 </Card>
                             }
+                            {/* END: List of uploaded videos */}
                         </Col>
                     </Row>
                     {/* END: Info of current + List of uploaded videos */}
