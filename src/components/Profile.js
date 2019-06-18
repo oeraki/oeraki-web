@@ -164,15 +164,17 @@ class Profile extends React.Component {
         // Listener on current user's metadata
         db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
             console.log("Current userMetadata: ", doc.data());
-            self.setState({
-                userMetadata: {
-                    skills: doc.data().skills,
-                    username: doc.data().username,
-                    address: doc.data().address,
-                    description: doc.data().description,
-                    avatar: doc.data().avatar
-                }
-            })
+            if (doc.data()) {
+                self.setState({
+                    userMetadata: {
+                        skills: doc.data().skills,
+                        username: doc.data().username,
+                        address: doc.data().address,
+                        description: doc.data().description,
+                        avatar: doc.data().avatar
+                    }
+                })
+            }
         });
     }
     // END: Methods for REACT Life Cycle
@@ -460,7 +462,7 @@ class Profile extends React.Component {
                                         <label className="form-control-label">Skills</label>
                                         <Input
                                             className="form-control-alternative"
-                                            placeholder="Tell us about your skills"
+                                            placeholder="Tell us about your skills (Hint: If you have multiple skills, use commas to separate them)"
                                             rows="4"
                                             type="textarea"
                                             onChange={this.handleSkillsChange}
@@ -468,10 +470,10 @@ class Profile extends React.Component {
                                         />
                                     </FormGroup>
                                     <FormGroup>
-                                        <label className="form-control-label">Avatar (Url)</label>
+                                        <label className="form-control-label">Avatar (URL)</label>
                                         <Input
                                             className="form-control-alternative"
-                                            placeholder="Put the url of your new avatar picture here (Remember, the url should be valid)"
+                                            placeholder="Put the URL of your new avatar picture here (Hint: The URL should be valid)"
                                             rows="4"
                                             type="textarea"
                                             onChange={this.handleAvatarChange}

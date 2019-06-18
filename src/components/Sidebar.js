@@ -62,12 +62,14 @@ class Sidebar extends React.Component {
         // Listener on current user's metadata
         db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
             console.log("Current userMetadata: ", doc.data());
-            self.setState({
-                userMetadata: {
-                    avatar: doc.data().avatar,
-                    username: doc.data().username
-                }
-            })
+            if (doc.data()) {
+                self.setState({
+                    userMetadata: {
+                        avatar: doc.data().avatar,
+                        username: doc.data().username
+                    }
+                })
+            }
         });
     }
     
