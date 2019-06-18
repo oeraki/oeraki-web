@@ -15,7 +15,8 @@ import {
     Input,
     FormGroup,
     Progress,
-    Badge
+    Badge,
+    CardText
 } from "reactstrap";
 import Dropzone from 'react-dropzone'
 import firebase from '../firebase'
@@ -186,6 +187,7 @@ class Profile extends React.Component {
         })
     }
     setCurrentVideo(video) {
+        console.log('Current video:')
         console.log(video)
         this.setState({
             current_video: video,
@@ -365,6 +367,10 @@ class Profile extends React.Component {
                                 <Card className="bg-secondary shadow border-0">
                                     <CardHeader className="bg-transparent">
                                         <span>{this.state.current_video.title}</span>
+                                        <br></br>
+                                        <span className="mt-3 mb-0 text-muted text-sm">
+                                            by {this.state.userMetadata.username}
+                                        </span>
                                         <button
                                             aria-label="Close"
                                             className="close"
@@ -376,6 +382,11 @@ class Profile extends React.Component {
                                         </button>
                                     </CardHeader>
                                     <CardBody>
+                                        <CardText>
+                                            <span className="mt-3 mb-0 text-muted text-sm">
+                                                {this.state.current_video.description}
+                                            </span>
+                                        </CardText>
                                         <video width="100%" controls>
                                         <source src={this.state.current_video.videoSource} type="video/mp4">
                                             </source>

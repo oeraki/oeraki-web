@@ -232,7 +232,7 @@ class Collaboration extends React.Component {
                                                     </CardTitle>
                                                 <span className="mt-3 mb-0 text-muted text-sm">
                                                     Singer, Song Writer
-                                                    </span>
+                                                </span>
                                             </div>
                                         </Row>
                                         <Row>
