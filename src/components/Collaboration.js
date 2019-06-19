@@ -27,8 +27,16 @@ class Collaboration extends React.Component {
 
             // START: States for Events
             musicians: [],
-            currentMusician: null
+            currentMusician: null,
             // END: States for Events
+
+            // START: States for uploaded video list
+            uploaded_videos: [],
+            current_video: null,
+            videoModal: false,
+            thumbnailURL: '',
+            videoURL: '',
+            // END: States for uploaded video list
         }
     }
 
@@ -42,7 +50,7 @@ class Collaboration extends React.Component {
             var musicians = [];
             querySnapshot.forEach(function (doc) {
                 let musician = doc.data()
-                musicians['id'] = doc.id
+                musician['id'] = doc.id
                 musicians.push(musician);
             });
             self.setState({
@@ -54,11 +62,34 @@ class Collaboration extends React.Component {
 
     // START: Methods for Event Detail Toggle
     toggleMusicianDetail(musician) {
-        this.setState({
-            showMusicianDetail: !this.state.showMusicianDetail,
-            currentMusician: musician
-        })
-        console.log(this.state.events)
+        let db = this.state.databaseRef
+        let self = this
+
+        if (musician) {
+            db.collection("demo_users").doc(musician.id).collection("videos").get().then(function (querySnapshot) {
+                let uploaded_videos = []
+                querySnapshot.forEach(function (doc) {
+                    // doc.data() is never undefined for query doc snapshots
+                    uploaded_videos.push(doc.data())
+                });
+                self.setState({
+                    showMusicianDetail: !self.state.showMusicianDetail,
+                    currentMusician: musician,
+                    uploaded_videos: uploaded_videos
+                })
+                console.log(self.state.events)
+                console.log(self.state.uploaded_videos)
+
+            });
+        } else {
+            self.setState({
+                showMusicianDetail: !self.state.showMusicianDetail,
+                currentMusician: musician,
+                uploaded_videos: []
+            })
+            console.log(self.state.events)
+            console.log(self.state.uploaded_videos)
+        }
     }
     toggleApplyModal() {
         this.setState({
@@ -70,6 +101,7 @@ class Collaboration extends React.Component {
             applied: !this.state.applied
         })
     }
+    // END: Methods for Event Detail Toggle
 
     render() {
         return (
