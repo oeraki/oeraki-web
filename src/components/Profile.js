@@ -54,6 +54,10 @@ class Profile extends React.Component {
         this.removeVideo = this.removeVideo.bind(this)
         // END: Listeners for Music Video Setting
 
+        // START: Listeners for Seeing Reviews
+        this.seeReview = this.seeReview.bind(this)
+        // END: Listeners for Seeing Reviews
+
         this.state = {
             // START: States for Uploading Song
             uploadModal: false,
@@ -362,6 +366,29 @@ class Profile extends React.Component {
         }
     }
     // END: Methods for Music Video Setting
+
+    // START: Methods for Seeing Reviews
+    seeReview() {
+        alert('This feature is not available yet')
+        // Dummy function
+        // let db = this.state.databaseRef
+        // let batch = db.batch()
+        // for (var i = 0; i < 8; i++) {
+        //     batch.set(db.collection("events").doc(), {
+        //         title: '',
+        //         owner: '',
+        //         time: '',
+        //         description: '',
+        //         pay: '',
+        //         location: '',
+        //         type: ''
+        //     })
+        // }
+        // batch.commit().then(function () {
+        //     console.log('All events uploaded')
+        // });
+    }
+    // END: Methods for Seeing Reviews
 
     render() {
         const fileInputStyle = {
@@ -780,7 +807,7 @@ class Profile extends React.Component {
                                     <p>
                                     {this.state.userMetadata.description}
                                     </p>
-                                    <a href="#pablo" onClick={e => e.preventDefault()}>
+                                    <a href="#pablo" onClick={this.seeReview}>
                                     See reviews
                                     </a>
                                 </div>
@@ -851,9 +878,11 @@ class Profile extends React.Component {
                                     <CardBody>
                                         <div className="py-3 text-center">
                                             <i className="ni ni-image ni-3x" />
-                                            <h4 className="heading mt-4">Empty</h4>
+                                            <h4 className="heading mt-4">Nothing to see here...</h4>
                                             <p>
-                                                It seems you have not uploaded any videos
+                                                It seems you have not uploaded any music videos
+                                                <br></br>
+                                                Click 'Upload song'
                                             </p>
                                         </div>
                                     </CardBody>
