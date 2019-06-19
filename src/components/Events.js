@@ -1,39 +1,76 @@
 import React from "react";
 import Header from './Header';
 import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge, Button, Modal, CardHeader, FormGroup, Input, Alert } from "reactstrap";
+import firebase from '../firebase';
 
 class Events extends React.Component {
     constructor(props) {
         super(props)
         
+        // START: Listeners for Event Detail Toggle
         this.toggleEventDetail = this.toggleEventDetail.bind(this)
         this.toggleApplyModal = this.toggleApplyModal.bind(this)
         this.toggleApplied = this.toggleApplied.bind(this)
+        // END: isteners for Event Detail Toggle
 
         this.state = {
+            // START: States for Event Detail Toggle
             showEventDetail: false,
             applyModal: false,
-            applied: false
+            applied: false,
+            // END: States for Event Detail Toggle
+
+            // START: States for Firestore
+            databaseRef: firebase.firestore(),
+            user: firebase.auth().currentUser,
+            // END: States for Firestore
+
+            // START: States for Events
+            events: [],
+            currentMusicEvent: null
+            // END: States for Events
         }
     }
 
-    toggleEventDetail() {
-        this.setState({
-            showEventDetail: !this.state.showEventDetail
-        })
-    }
+    // START: Methods for REACT Life Cycle
+    componentDidMount() {
+        let db = this.state.databaseRef
+        let self = this
 
+        // Listener on events
+        db.collection("events").onSnapshot(function (querySnapshot) {
+            var events = [];
+            querySnapshot.forEach(function (doc) {
+                let event = doc.data()
+                event['id'] = doc.id
+                events.push(event);
+            });
+            self.setState({
+                events: events
+            })
+        });
+    }
+    // END: Methods for REACT Life Cycle
+
+    // START: Methods for Event Detail Toggle
+    toggleEventDetail(music_event) {
+        this.setState({
+            showEventDetail: !this.state.showEventDetail,
+            currentMusicEvent: music_event
+        })
+        console.log(this.state.events)
+    }
     toggleApplyModal() {
         this.setState({
             applyModal: !this.state.applyModal
         })
     }
-
     toggleApplied() {
         this.setState({
             applied: !this.state.applied
         })
     }
+    // END: Methods for Event Detail Toggle
 
     render() {
         return (
@@ -46,314 +83,58 @@ class Events extends React.Component {
                                 <div style={{ marginBottom: '15px', marginTop: '15px' }}>
                                     <Badge className="badge-default">
                                         <i className="ni ni-notification-70"></i>
-                                        <span className="text-uppercase mb-0 font-weight-bold">  Cafes</span>
+                                        <span className="text-uppercase mb-0 font-weight-bold">  Cafes & Schools</span>
                                     </Badge>
                                 </div>
                             </Col>
                         </Row>
+                        {/* START: List of events */}
                         <Row>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardImg
-                                        src='https://media.cntraveler.com/photos/5a9051d0b00933493b9a68e1/master/w_820,c_limit/Park-Bench-Deli_2018_f5c64660862181.5a5c2815786e3.jpg'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    Singer needed this Friday!!
-                                            </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by Glasshouse Cafe
-                                            </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Fri, 27 May 2019
-                                            </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
-                                            <span className="mt-3 mb-0 text-muted text-sm">
-                                                3:30
-                                            </span>
-                                        </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardImg
-                                        src='https://sethlui.com/wp-content/uploads/2015/03/symmetry-cafe-2403.jpg'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    Music Band needed for night performance
-                                            </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by Symmetry Cafe
-                                            </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Wed, 25 May 2019
-                                            </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
-                                            <span className="mt-3 mb-0 text-muted text-sm">
-                                                3:30
-                                            </span>
-                                        </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardImg
-                                        src='https://sethlui.com/wp-content/uploads/2015/03/Nassim-Hill-bakery-1522.jpg'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    We need a guitarist
-                                            </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by Nassim Hill Bakery
-                                            </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Thurs, 26 May 2019
-                                            </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
-                                            <span className="mt-3 mb-0 text-muted text-sm">
-                                                3:30
-                                            </span>
-                                        </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardImg
-                                        src='https://media.cntraveler.com/photos/5a905b0b8087c02669a7db21/master/w_820,c_limit/Plain-Vanilla_2018_PV-TBstore-1.jpg'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    Pianonist needed during the weekend
-                                            </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by Plain Vanilla Bakery
-                                            </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Sun, 29 May 2019
-                                            </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
-                                            <span className="mt-3 mb-0 text-muted text-sm">
-                                                3:30
-                                            </span>
-                                        </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-
-                        </Row>
-
-                        <Row>
-                            <Col lg="6" xl="3">
-                                <div style={{ marginBottom: '15px', marginTop: '15px' }}>
-                                    <Badge className="badge-default">
-                                        <i className="ni ni-notification-70"></i>
-                                        <span className="text-uppercase mb-0 font-weight-bold">  School events</span>
-                                    </Badge>
-                                </div>
-                            </Col>
-                        </Row>
-
-                        <Row>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0"
-                                    onClick={this.toggleEventDetail}
+                            {this.state.events.length > 0 && this.state.events.map((music_event, index) => (
+                                <Col lg="6" xl="3" key={index} style={{marginBottom: '15px'}}
+                                    onClick={() => this.toggleEventDetail(music_event)}
                                 >
-                                    <CardImg
-                                    src='https://d1m37zmi87nupc.cloudfront.net/wp-content/uploads/2018/03/07100957/nus_open_day_2018_social.jpg'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    Singer for NUS Orientation
+                                    <Card className="card-stats mb-4 mb-xl-0">
+                                        <CardImg
+                                            src={music_event.url}
+                                            top
+                                        />
+                                        <CardBody>
+                                            <Row>
+                                                <div className="col">
+                                                    <CardTitle
+                                                        tag="h5"
+                                                        className="text-uppercase mb-0 font-weight-bold"
+                                                    >
+                                                        {music_event.title}
                                             </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by NUS
+                                                    <span className="mt-3 mb-0 text-muted text-sm">
+                                                        by {music_event.owner}
                                             </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Monday, 24 May 2019
+                                                </div>
+                                            </Row>
+                                            <Row>
+                                                <div className="col">
+                                                    <span className="mt-3 mb-0 text-sm">
+                                                        <i className="ni ni-calendar-grid-58"></i> {music_event.time}
                                             </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
+                                                </div>
+                                                {/* <Col className="col-auto">
                                             <span className="mt-3 mb-0 text-muted text-sm">
                                                 3:30
                                             </span>
                                         </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardImg
-                                    src='https://pro2-bar-s3-cdn-cf.myportfolio.com/e3e85de9d861e72b6ff6b2d3b4476512/b4a8bcb2271aa0af01b14320_rw_1200.jpg?h=45c1012c7774c3714a7c2e9296c3ec03'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    Singer needed for NOC event
-                                            </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by The Hangar
-                                            </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Wed, 25 May 2019
-                                            </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
-                                            <span className="mt-3 mb-0 text-muted text-sm">
-                                                3:30
-                                            </span>
-                                        </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardImg
-                                        src='https://www.redsports.sg/wp-content/uploads/2018/05/DSC00714.jpg'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    Guitarist for sport festivals
-                                            </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by Raffles JC
-                                            </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Thurs, 26 May 2019
-                                            </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
-                                            <span className="mt-3 mb-0 text-muted text-sm">
-                                                3:30
-                                            </span>
-                                        </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-                            <Col lg="6" xl="3">
-                                <Card className="card-stats mb-4 mb-xl-0">
-                                    <CardImg
-                                    src='http://news.ntu.edu.sg/CoE-CE/PublishingImages/2017/NTUOpenHouse2017_webimg1.jpg'
-                                        top
-                                    />
-                                    <CardBody>
-                                        <Row>
-                                            <div className="col">
-                                                <CardTitle
-                                                    tag="h5"
-                                                    className="text-uppercase mb-0 font-weight-bold"
-                                                >
-                                                    Music performance needed
-                                            </CardTitle>
-                                                <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by NTU Career Fair
-                                            </span>
-                                            </div>
-                                        </Row>
-                                        <Row>
-                                            <div className="col">
-                                                <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Sun, 29 May 2019
-                                            </span>
-                                            </div>
-                                            {/* <Col className="col-auto">
-                                            <span className="mt-3 mb-0 text-muted text-sm">
-                                                3:30
-                                            </span>
-                                        </Col> */}
-                                        </Row>
-                                    </CardBody>
-                                </Card>
-                            </Col>
-
+                                            </Row>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            ))}
                         </Row>
+                        {/* END: List of events */}
+
                     </Container>
                 }
-                {this.state.showEventDetail &&
+                {this.state.showEventDetail && this.state.currentMusicEvent &&
                     <Container className=" mt--7" fluid>
                     {this.state.applyModal &&
                         <Modal
@@ -379,7 +160,7 @@ class Events extends React.Component {
                                     {!this.state.applied &&
                                     <CardBody>
                                         <Alert color="primary">
-                                            <strong>By applying</strong>, your profile & music works will be sent to the event host
+                                            <strong>By applying</strong>, your profile & music works will be seen by the event host
                                         </Alert>
                                         <FormGroup>
                                             <label className="form-control-label">Message</label>
@@ -428,7 +209,7 @@ class Events extends React.Component {
                                         className="my-4"
                                         color="primary"
                                         type="button"
-                                        onClick={this.toggleEventDetail}
+                                        onClick={() => this.toggleEventDetail(null)}
                                     >
                                     <i className="ni ni-bold-left"></i> Back
                                     </Button>
@@ -439,7 +220,7 @@ class Events extends React.Component {
                             <Col lg="12" xl="12">
                                 <Card className="card-stats mb-4 mb-xl-0">
                                     <CardImg
-                                    src='https://d1m37zmi87nupc.cloudfront.net/wp-content/uploads/2018/03/07100957/nus_open_day_2018_social.jpg'
+                                    src={this.state.currentMusicEvent.url}
                                         top
                                     />
                                     <CardBody>
@@ -449,17 +230,17 @@ class Events extends React.Component {
                                                     tag="h5"
                                                     className="text-uppercase mb-0 font-weight-bold"
                                                 >
-                                                    Singer for NUS Orientation
+                                                    {this.state.currentMusicEvent.title}
                                                 </CardTitle>
                                                 <span className="mt-3 mb-0 text-muted text-sm">
-                                                    by NUS
+                                                    by {this.state.currentMusicEvent.owner}
                                                 </span>
                                             </div>
                                         </Row>
                                         <Row>
                                             <div className="col">
                                                 <span className="mt-3 mb-0 text-sm">
-                                                    <i className="ni ni-calendar-grid-58"></i> Monday, 24 May 2019
+                                                <i className="ni ni-calendar-grid-58"></i> {this.state.currentMusicEvent.time}
                                                 </span>
                                             </div>
                                         </Row>
@@ -473,7 +254,7 @@ class Events extends React.Component {
                                                     Description
                                                     </CardTitle>
                                                 <span className="mt-3 mb-0 text-muted text-sm">
-                                                    We need a talented singer to perform 5 songs during the event of NUS Orientation. The orientation lasts from 10AM to 5PM. There will be breaks of 20 mins between songs. Snacks are provided.
+                                                    {this.state.currentMusicEvent.description}
                                                 </span>
                                             </div>
                                         </Row>
@@ -487,7 +268,7 @@ class Events extends React.Component {
                                                     Pay
                                                 </CardTitle>
                                                 <span className="mt-3 mb-0 text-muted text-sm">
-                                                    30 SGD per song
+                                                    {this.state.currentMusicEvent.pay}
                                                 </span>
                                             </div>
                                         </Row>
@@ -501,7 +282,7 @@ class Events extends React.Component {
                                                     Location
                                                     </CardTitle>
                                                 <span className="mt-3 mb-0 text-muted text-sm">
-                                                    NUS Utown, Kent Ridge
+                                                    {this.state.currentMusicEvent.location}
                                                 </span>
                                             </div>
                                         </Row>
