@@ -91,7 +91,7 @@ class Collaboration extends React.Component {
                         <Row>
                             {this.state.musicians.length > 0 && this.state.musicians.map((musician, index) => (
                                 <Col lg="6" xl="3" key={index} style={{ marginBottom: '15px' }}
-                                    // onClick={() => this.toggleEventDetail(music_event)}
+                                    onClick={() => this.toggleMusicianDetail(musician)}
                                 >
                                     <Card className="card-stats mb-4 mb-xl-0">
                                         <CardImg
@@ -130,6 +130,174 @@ class Collaboration extends React.Component {
                             ))}
                         </Row>
                         {/* END: List of events */}
+
+                    </Container>
+                }
+
+                {this.state.showMusicianDetail && this.state.currentMusician &&
+                    <Container className="mt--7" fluid>
+                        <Row>
+                            <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
+                                <Card className="card-profile shadow">
+                                    <Row className="justify-content-center">
+                                        <Col className="order-lg-2" lg="3">
+                                            <div className="card-profile-image">
+                                                <a href="#pablo" onClick={e => e.preventDefault()}>
+                                                    <img
+                                                        alt="Changing Avatar..."
+                                                        className="rounded-circle"
+                                                        src={this.state.currentMusician.avatar}
+                                                    />
+                                                </a>
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                    <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                                        <div className="d-flex justify-content-between">
+                                            <Button
+                                                className="mr-4"
+                                                color="info"
+                                                href="#pablo"
+                                                // onClick={this.toggleUploadModal}
+                                                size="sm"
+                                            >
+                                                Let's connect
+                                            </Button>
+                                            <Button
+                                                className="float-right"
+                                                color="default"
+                                                href="#pablo"
+                                                // onClick={this.toggleEditModal}
+                                                size="sm"
+                                            >
+                                                Give review
+                                            </Button>
+                                        </div>
+                                    </CardHeader>
+                                    <CardBody className="pt-0 pt-md-4">
+                                        <Row>
+                                            <div className="col">
+                                                <div className="card-profile-stats d-flex justify-content-center mt-md-5">
+                                                    <div>
+                                                        {/* <span className="heading">{this.state.uploaded_videos.length}</span> */}
+                                                        <span className="heading">0</span>
+                                                        <span className="description">Songs</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Row>
+                                        <div className="text-center">
+                                            <h3>
+                                                {this.state.currentMusician.username}
+                                                {/* <span className="font-weight-light">, 27</span> */}
+                                            </h3>
+                                            <div className="h5 font-weight-300">
+                                                <i className="ni location_pin mr-2" />
+                                                {this.state.currentMusician.address}
+                                            </div>
+                                            <div className="h5 mt-4">
+                                                <i className="ni business_briefcase-24 mr-2" />
+                                                {this.state.currentMusician.skills.length > 0 && this.state.currentMusician.skills.map((skill, index) => (
+                                                    <span key={index}><Badge color="primary">{skill}</Badge> </span>
+                                                ))}
+                                            </div>
+                                            <hr className="my-4" />
+                                            <p>
+                                                {this.state.currentMusician.description}
+                                            </p>
+                                            <a href="#pablo" 
+                                                // onClick={this.seeReview}
+                                            >
+                                                See reviews
+                                        </a>
+                                        </div>
+                                    </CardBody>
+                                </Card>
+                            </Col>
+                            <Col className="order-xl-1" xl="8">
+                                <div style={{ marginBottom: '15px' }}>
+                                    <Button
+                                        className="my-4"
+                                        color="primary"
+                                        type="button"
+                                        onClick={() => this.toggleMusicianDetail(null)}
+                                    >
+                                        <i className="ni ni-bold-left"></i> Back
+                                        </Button>
+                                </div>
+                                {/* {this.state.uploaded_videos.length > 0 && this.state.uploaded_videos.map((video, index) => (
+                                    <Card
+                                        className="bg-secondary shadow"
+                                        style={{ marginBottom: '10px' }}
+                                        key={index}
+                                    >
+                                        <CardHeader>
+                                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                <span className="avatar avatar-sm rounded-circle">
+                                                    <img
+                                                        alt="..."
+                                                        src={this.state.userMetadata.avatar}
+                                                    />
+                                                </span>
+                                                <span style={{ marginLeft: '10px' }}>
+                                                    <span className="mb-0 text-sm font-weight-bold"> {video.ownerName}</span>
+                                                    <span className="mb-0 text-sm"> uploaded on </span>
+                                                    <span className="mb-0 text-sm text-muted">
+                                                        {new Date(video.timestamp).getUTCDate()}/
+                                                        {new Date(video.timestamp).getUTCMonth() + 1}/
+                                                        {new Date(video.timestamp).getUTCFullYear()}
+                                                    </span>
+                                                </span>
+                                            </div>
+                                        </CardHeader>
+                                        <CardBody>
+                                            <Row>
+                                                <Col xs='6'>
+                                                    <CardImg
+                                                        src={video.thumbnail}
+                                                        onClick={() => this.setCurrentVideo(video)}
+                                                    >
+                                                    </CardImg>
+                                                </Col>
+                                                <Col xs='auto'>
+                                                    <CardTitle className="font-weight-bold mb-0">
+                                                        {video.title}
+                                                    </CardTitle>
+                                                    <span className="mt-3 mb-0 text-muted text-sm">
+                                                        by {video.ownerName}<br></br>
+                                                        {video.views} views<br></br>
+                                                        <Button color="secondary" size="sm"
+                                                            type="button"
+                                                            onClick={() => this.removeVideo(video)}
+                                                        >
+                                                            <i className="fas fa-trash-alt"></i> Remove
+                                                        </Button>
+                                                    </span>
+                                                </Col>
+                                            </Row>
+                                        </CardBody>
+                                    </Card>
+                                ))} */}
+                                {/* {this.state.uploaded_videos.length === 0 &&
+                                    <Card
+                                        className="bg-secondary shadow"
+                                        style={{ marginBottom: '10px' }}
+                                    >
+                                        <CardBody>
+                                            <div className="py-3 text-center">
+                                                <i className="ni ni-image ni-3x" />
+                                                <h4 className="heading mt-4">Nothing to see here...</h4>
+                                                <p>
+                                                    It seems you have not uploaded any music videos
+                                                    <br></br>
+                                                    Click 'Upload song'
+                                                </p>
+                                            </div>
+                                        </CardBody>
+                                    </Card>
+                                } */}
+                            </Col>
+                        </Row>
 
                     </Container>
                 }
