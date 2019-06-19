@@ -62,7 +62,8 @@ class Events extends React.Component {
     }
     toggleApplyModal() {
         this.setState({
-            applyModal: !this.state.applyModal
+            applyModal: !this.state.applyModal,
+            applied: false
         })
     }
     toggleApplied() {
