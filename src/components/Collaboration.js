@@ -295,7 +295,7 @@ class Collaboration extends React.Component {
                                                 <div className="card-profile-stats d-flex justify-content-center mt-md-5">
                                                     <div>
                                                         {/* <span className="heading">{this.state.uploaded_videos.length}</span> */}
-                                                        <span className="heading">0</span>
+                                                        <span className="heading">{this.state.uploaded_videos.length}</span>
                                                         <span className="description">Songs</span>
                                                     </div>
                                                 </div>
