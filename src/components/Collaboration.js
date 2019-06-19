@@ -1,6 +1,6 @@
 import React from "react";
 import Header from './Header';
-import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge, Button, Modal, CardHeader, FormGroup, Input, Alert } from "reactstrap";
+import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge, Button, Modal, CardHeader, CardText } from "reactstrap";
 import firebase from '../firebase';
 
 class Collaboration extends React.Component {
@@ -12,6 +12,9 @@ class Collaboration extends React.Component {
         this.toggleApplyModal = this.toggleApplyModal.bind(this)
         this.toggleApplied = this.toggleApplied.bind(this)
         // END: isteners for Event Detail Toggle
+
+        this.setCurrentVideo = this.setCurrentVideo.bind(this)
+        this.toggleVideoModal = this.toggleVideoModal.bind(this)
 
         this.state = {
             // START: States for Event Detail Toggle
@@ -103,6 +106,20 @@ class Collaboration extends React.Component {
     }
     // END: Methods for Event Detail Toggle
 
+    setCurrentVideo(video) {
+        console.log('Current video:')
+        console.log(video)
+        this.setState({
+            current_video: video,
+            videoModal: !this.state.videoModal,
+        })
+    }
+    toggleVideoModal(video) {
+        this.setState({
+            videoModal: !this.state.videoModal,
+        })
+    }
+
     render() {
         return (
             <>
@@ -168,6 +185,72 @@ class Collaboration extends React.Component {
 
                 {this.state.showMusicianDetail && this.state.currentMusician &&
                     <Container className="mt--7" fluid>
+                        {/* START: Modal for Opening Video */}
+                        <Modal
+                            className="modal-dialog-centered"
+                            isOpen={this.state.videoModal}
+                            toggle={this.toggleVideoModal}
+                            size="lg"
+                        >
+                            <div className="modal-body p-0">
+                                {this.state.current_video &&
+                                    <Card className="bg-secondary shadow border-0">
+                                        <CardHeader className="bg-transparent">
+                                            <span>{this.state.current_video.title}</span>
+                                            <br></br>
+                                            <span className="mt-3 mb-0 text-muted text-sm">
+                                                by {this.state.currentMusician.username}
+                                            </span>
+                                            <button
+                                                aria-label="Close"
+                                                className="close"
+                                                data-dismiss="modal"
+                                                type="button"
+                                                onClick={this.toggleVideoModal}
+                                            >
+                                                <span aria-hidden={true}>×</span>
+                                            </button>
+                                        </CardHeader>
+                                        <CardBody>
+                                            <CardText>
+                                                <span className="mt-3 mb-0 text-muted text-sm">
+                                                    {this.state.current_video.description}
+                                                </span>
+                                            </CardText>
+                                            {/* <video width="100%" controls>
+                                                <source src={this.state.current_video.videoSource} type="video/mp4">
+                                                </source>
+                                            </video> */}
+                                            <iframe width="100%" height="315" 
+                                                src={this.state.current_video.videoSource} 
+                                                frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowFullScreen
+                                            >
+                                            </iframe>
+                                        </CardBody>
+                                    </Card>
+                                }
+                                {!this.state.current_video &&
+                                    <Card className="bg-secondary shadow border-0">
+                                        <CardHeader className="bg-transparent">
+                                            <span>No video selected</span>
+                                            <button
+                                                aria-label="Close"
+                                                className="close"
+                                                data-dismiss="modal"
+                                                type="button"
+                                                onClick={this.toggleVideoModal}
+                                            >
+                                                <span aria-hidden={true}>×</span>
+                                            </button>
+                                        </CardHeader>
+                                        <CardBody>
+                                        </CardBody>
+                                    </Card>
+                                }
+                            </div>
+                        </Modal>
+                        {/* END: Modal for Opening Video */}
                         <Row>
                             <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
                                 <Card className="card-profile shadow">
@@ -257,7 +340,7 @@ class Collaboration extends React.Component {
                                         <i className="ni ni-bold-left"></i> Back
                                         </Button>
                                 </div>
-                                {/* {this.state.uploaded_videos.length > 0 && this.state.uploaded_videos.map((video, index) => (
+                                {this.state.uploaded_videos.length > 0 && this.state.uploaded_videos.map((video, index) => (
                                     <Card
                                         className="bg-secondary shadow"
                                         style={{ marginBottom: '10px' }}
@@ -268,7 +351,7 @@ class Collaboration extends React.Component {
                                                 <span className="avatar avatar-sm rounded-circle">
                                                     <img
                                                         alt="..."
-                                                        src={this.state.userMetadata.avatar}
+                                                        src={this.state.currentMusician.avatar}
                                                     />
                                                 </span>
                                                 <span style={{ marginLeft: '10px' }}>
@@ -298,18 +381,18 @@ class Collaboration extends React.Component {
                                                     <span className="mt-3 mb-0 text-muted text-sm">
                                                         by {video.ownerName}<br></br>
                                                         {video.views} views<br></br>
-                                                        <Button color="secondary" size="sm"
+                                                        {/* <Button color="secondary" size="sm"
                                                             type="button"
                                                             onClick={() => this.removeVideo(video)}
                                                         >
                                                             <i className="fas fa-trash-alt"></i> Remove
-                                                        </Button>
+                                                        </Button> */}
                                                     </span>
                                                 </Col>
                                             </Row>
                                         </CardBody>
                                     </Card>
-                                ))} */}
+                                ))}
                                 {/* {this.state.uploaded_videos.length === 0 &&
                                     <Card
                                         className="bg-secondary shadow"
