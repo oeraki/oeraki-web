@@ -7,31 +7,24 @@ class Collaboration extends React.Component {
     constructor(props) {
         super(props)
 
-        // START: Listeners for Event Detail Toggle
+        // START: Listeners for Musician Detail Toggle
         this.toggleMusicianDetail = this.toggleMusicianDetail.bind(this)
-        this.toggleApplyModal = this.toggleApplyModal.bind(this)
-        this.toggleApplied = this.toggleApplied.bind(this)
-        // END: isteners for Event Detail Toggle
+        // END: isteners for Musician Detail Toggle
 
         this.setCurrentVideo = this.setCurrentVideo.bind(this)
         this.toggleVideoModal = this.toggleVideoModal.bind(this)
 
         this.state = {
-            // START: States for Event Detail Toggle
-            showMusicianDetail: false,
-            applyModal: false,
-            applied: false,
-            // END: States for Event Detail Toggle
-
             // START: States for Firestore
             databaseRef: firebase.firestore(),
             user: firebase.auth().currentUser,
             // END: States for Firestore
 
-            // START: States for Events
+            // START: States for Musicians
             musicians: [],
             currentMusician: null,
-            // END: States for Events
+            showMusicianDetail: false,
+            // END: States for Musicians
 
             // START: States for uploaded video list
             uploaded_videos: [],
@@ -59,11 +52,12 @@ class Collaboration extends React.Component {
             self.setState({
                 musicians: musicians
             })
+            // console.log(self.state.musicians)
         });
     }
     // END: Methods for REACT Life Cycle
 
-    // START: Methods for Event Detail Toggle
+    // START: Methods for Musician Detail Toggle
     toggleMusicianDetail(musician) {
         let db = this.state.databaseRef
         let self = this
@@ -80,9 +74,9 @@ class Collaboration extends React.Component {
                     currentMusician: musician,
                     uploaded_videos: uploaded_videos
                 })
-                console.log(self.state.events)
                 console.log(self.state.uploaded_videos)
-
+                console.log(self.state.currentMusician)
+                console.log(self.state.user)
             });
         } else {
             self.setState({
@@ -90,21 +84,12 @@ class Collaboration extends React.Component {
                 currentMusician: musician,
                 uploaded_videos: []
             })
-            console.log(self.state.events)
             console.log(self.state.uploaded_videos)
+            console.log(self.state.currentMusician)
+            console.log(self.state.user)
         }
     }
-    toggleApplyModal() {
-        this.setState({
-            applyModal: !this.state.applyModal
-        })
-    }
-    toggleApplied() {
-        this.setState({
-            applied: !this.state.applied
-        })
-    }
-    // END: Methods for Event Detail Toggle
+    // END: Methods for Musician Detail Toggle
 
     setCurrentVideo(video) {
         console.log('Current video:')
@@ -136,7 +121,7 @@ class Collaboration extends React.Component {
                                 </div>
                             </Col>
                         </Row>
-                        {/* START: List of events */}
+                        {/* START: List of musicians */}
                         <Row>
                             {this.state.musicians.length > 0 && this.state.musicians.map((musician, index) => (
                                 <Col lg="6" xl="3" key={index} style={{ marginBottom: '15px' }}
@@ -251,6 +236,7 @@ class Collaboration extends React.Component {
                             </div>
                         </Modal>
                         {/* END: Modal for Opening Video */}
+                        {/* Doing */}
                         <Row>
                             <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
                                 <Card className="card-profile shadow">
