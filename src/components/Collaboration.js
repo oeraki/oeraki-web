@@ -1,6 +1,23 @@
 import React from "react";
 import Header from './Header';
-import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge, Button, Modal, CardHeader, CardText } from "reactstrap";
+import { 
+    Card, 
+    CardBody, 
+    CardTitle, 
+    Container, 
+    Row, 
+    Col, 
+    CardImg, 
+    Badge, 
+    Button, 
+    Modal, 
+    CardHeader, 
+    CardText, 
+    Input,
+    InputGroup,
+    InputGroupAddon,
+    InputGroupText
+} from "reactstrap";
 import firebase from '../firebase';
 
 class Collaboration extends React.Component {
@@ -11,8 +28,14 @@ class Collaboration extends React.Component {
         this.toggleMusicianDetail = this.toggleMusicianDetail.bind(this)
         // END: isteners for Musician Detail Toggle
 
+        // START: Listeners for Opening Video Modal
         this.setCurrentVideo = this.setCurrentVideo.bind(this)
         this.toggleVideoModal = this.toggleVideoModal.bind(this)
+        // START: Listeners for Opening Video Modal
+
+        // START: Listeners for Opening Messenger Modal
+        this.toggleMessengerModal = this.toggleMessengerModal.bind(this)
+        // START: Listeners for Opening Messenger Modal
 
         this.state = {
             // START: States for Firestore
@@ -33,6 +56,10 @@ class Collaboration extends React.Component {
             thumbnailURL: '',
             videoURL: '',
             // END: States for uploaded video list
+
+            // START: States for Messenger
+            messengerModal: false,
+            // END: States for Messenger
         }
     }
 
@@ -91,6 +118,7 @@ class Collaboration extends React.Component {
     }
     // END: Methods for Musician Detail Toggle
 
+    // START: Methods for Opening Video Modal
     setCurrentVideo(video) {
         console.log('Current video:')
         console.log(video)
@@ -104,8 +132,21 @@ class Collaboration extends React.Component {
             videoModal: !this.state.videoModal,
         })
     }
+    // END: Methods for Opening Video Modal
+
+    // START: Methods for Messenger Modal
+    toggleMessengerModal() {
+        this.setState({
+            messengerModal: !this.state.messengerModal,
+        })
+    }
+    // END: Methods for Messenger Modal
 
     render() {
+        const messengerBox = {
+            width: '100%',
+            height: '400px'
+        }
         return (
             <>
                 <Header />
@@ -237,6 +278,53 @@ class Collaboration extends React.Component {
                         </Modal>
                         {/* END: Modal for Opening Video */}
                         {/* Doing */}
+                        
+                        {/* START: Modal for Messenger */}
+                        <Modal
+                            className="modal-dialog-centered"
+                            isOpen={this.state.messengerModal}
+                            toggle={this.toggleMessengerModal}
+                            size="lg"
+                        >
+                            <div className="modal-body p-0">
+                                <Card className="bg-secondary shadow border-0">
+                                    <CardHeader className="bg-transparent">
+                                        <span>
+                                            Connect with <span className="mt-3 mb-0 text-muted text-sm">{this.state.currentMusician.username}</span>
+                                        </span>
+                                        <button
+                                            aria-label="Close"
+                                            className="close"
+                                            data-dismiss="modal"
+                                            type="button"
+                                            onClick={this.toggleMessengerModal}
+                                        >
+                                            <span aria-hidden={true}>×</span>
+                                        </button>
+                                    </CardHeader>
+                                    <CardBody>
+                                        <div style={messengerBox}>
+                                        </div>
+                                        <div style={{ width: '100%' }}>
+                                            <InputGroup className="input-group-alternative mb-4">
+                                                <Input type="text" placeholder="Say something..." />
+                                                <InputGroupAddon addonType="append">
+                                                    <InputGroupText>
+                                                        <span className="text-primary">
+                                                            {/* <i className="fas fa-paper-plane" /> */}
+                                                            Send
+                                                        </span>
+                                                    </InputGroupText>
+                                                </InputGroupAddon>
+                                            </InputGroup>
+                                        </div>
+                                    </CardBody>
+                                </Card>
+
+                            </div>
+                        </Modal>
+                        {/* END: Modal for Messenger */}
+
                         <Row>
                             <Col className="order-xl-2 mb-5 mb-xl-0" xl="4">
                                 <Card className="card-profile shadow">
@@ -259,7 +347,7 @@ class Collaboration extends React.Component {
                                                 className="mr-4"
                                                 color="info"
                                                 href="#pablo"
-                                                // onClick={this.toggleUploadModal}
+                                                onClick={this.toggleMessengerModal}
                                                 size="sm"
                                             >
                                                 Let's connect
