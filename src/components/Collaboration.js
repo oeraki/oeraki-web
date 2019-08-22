@@ -37,6 +37,11 @@ class Collaboration extends React.Component {
         this.toggleMessengerModal = this.toggleMessengerModal.bind(this)
         // START: Listeners for Opening Messenger Modal
 
+        // START: Listeners for sending message
+        this.sendMessage = this.sendMessage.bind(this)
+        this.handleMessageContentChange = this.handleMessageContentChange.bind(this)
+        // END: Listeners for sending message
+
         this.state = {
             // START: States for Firestore
             databaseRef: firebase.firestore(),
@@ -59,6 +64,7 @@ class Collaboration extends React.Component {
 
             // START: States for Messenger
             messengerModal: false,
+            message_content: ''
             // END: States for Messenger
         }
     }
@@ -141,6 +147,46 @@ class Collaboration extends React.Component {
         })
     }
     // END: Methods for Messenger Modal
+
+    // START: Method for sending message
+    sendMessage() {
+        let self_user_id = this.state.user.uid
+        let target_user_id = this.state.currentMusician.id
+
+        // Identify conversation_id
+        let conversation_id = 'default_conversation_id'
+        if (self_user_id > target_user_id) {
+            conversation_id = self_user_id + '_' + target_user_id
+        } else {
+            conversation_id = target_user_id + '_' + self_user_id
+        }
+
+        // Send message
+        let message_content = this.state.message_content
+        if (message_content != '') {
+            let db = this.state.databaseRef
+            let conversation_ref = db.collection('conversations').doc(conversation_id)
+            // Save message_content in database, with randomly generated ID
+            conversation_ref.collection('messages').add({
+                content: message_content,
+                ownerName: 'Default Name',
+                timestamp: 'Default timestamp',
+            })
+            .then(docRef => {
+                console.log("Document written with ID: ", docRef.id);
+                this.setState({ message_content: '' })
+            })
+            .catch(error => {
+                console.error("Error adding document: ", error);
+            })
+        }
+    }
+
+    handleMessageContentChange(event) {
+        let new_message_content = event.target.value
+        this.setState({ message_content: new_message_content })
+    }
+    // END: Method for sending message
 
     render() {
         const messengerBox = {
@@ -307,9 +353,16 @@ class Collaboration extends React.Component {
                                         </div>
                                         <div style={{ width: '100%' }}>
                                             <InputGroup className="input-group-alternative mb-4">
-                                                <Input type="text" placeholder="Say something..." />
+                                                <Input 
+                                                    type="text" 
+                                                    placeholder="Say something..."
+                                                    onChange={this.handleMessageContentChange}
+                                                    value={this.state.message_content}
+                                                />
                                                 <InputGroupAddon addonType="append">
-                                                    <InputGroupText>
+                                                    <InputGroupText
+                                                        onClick={this.sendMessage}
+                                                    >
                                                         <span className="text-primary">
                                                             {/* <i className="fas fa-paper-plane" /> */}
                                                             Send
