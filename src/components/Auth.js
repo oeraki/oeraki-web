@@ -44,9 +44,9 @@ class Auth extends React.Component {
                                 <Row className="justify-content-center">
                                     <Col lg="5" md="6">
                                         <h1 className="text-white">Hey there artist!</h1>
-                                        <p className="text-lead text-light">
+                                        <h2 className="text-lead text-white">
                                             Your next music opportunity is right around the corner
-                                        </p>
+                                        </h2>
                                     </Col>
                                 </Row>
                             </div>

@@ -64,7 +64,8 @@ class Collaboration extends React.Component {
 
             // START: States for Messenger
             messengerModal: false,
-            message_content: ''
+            message_content: '',
+            messages: []
             // END: States for Messenger
         }
     }
@@ -169,8 +170,8 @@ class Collaboration extends React.Component {
             // Save message_content in database, with randomly generated ID
             conversation_ref.collection('messages').add({
                 content: message_content,
-                ownerName: 'Default Name',
-                timestamp: 'Default timestamp',
+                ownerId: self_user_id,
+                timestamp: Date.now()
             })
             .then(docRef => {
                 console.log("Document written with ID: ", docRef.id);
