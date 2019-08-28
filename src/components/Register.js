@@ -1,4 +1,5 @@
 import React from "react";
+import firebase from '../firebase';
 
 // reactstrap components
 import {
@@ -19,11 +20,65 @@ class Register extends React.Component {
     constructor(props) {
         super(props)
 
+        // START: Methods for registering user
+        this.registerWithEmail = this.registerWithEmail.bind(this)
+        this.resetUserInfo = this.resetUserInfo.bind(this)
+        // END: Methods for registering user
+
+        // START: Methods for user infos
+        this.handleUsernameChange = this.handleUsernameChange.bind(this)
+        this.handleEmailChange = this.handleEmailChange.bind(this)
+        this.handlePasswordChange = this.handlePasswordChange.bind(this)
+        this.handleConfirmPasswordChange = this.handleConfirmPasswordChange.bind(this)
+        // this.handleMusicianTypeChange = this.handleMusicianTypeChange.bind(this)
+        // END: Methods for user infos
+
         this.state = {
+            // START: States for user infos
+            username: '',
+            email: '',
+            password: '',
+            confirm_password: '',
+            musician_type: '',
+            // END: States for user infos
+
             professional_content: 'A musician performing arts full-time, looking to network & collaborate with other musicians',
             casual_content: 'A hobbyist looking to find like-minded friends to play music & jam together'
         }
     }
+
+    // START: Methods for registering user
+    resetUserInfo() {
+        this.setState({
+            username: '',
+            email: '',
+            password: '',
+            confirm_password: '',
+            musician_type: ''
+        })
+    }
+    registerWithEmail() {
+        console.log(this.state)
+    }
+    // END: Methods for registering user
+
+    // START: Methods for user infos
+    handleUsernameChange(event) {
+        this.setState({ username: event.target.value })
+    }
+    handleEmailChange(event) {
+        this.setState({ email: event.target.value })
+    }
+    handlePasswordChange(event) {
+        this.setState({ password: event.target.value })
+    }
+    handleConfirmPasswordChange(event) {
+        this.setState({ confirm_password: event.target.value })
+    }
+    handleMusicianTypeChange(value) {
+        this.setState({ musician_type: value })
+    }
+    // END: Methods for user infos
 
     render() {
         return (
@@ -77,7 +132,7 @@ class Register extends React.Component {
                                                 <i className="ni ni-circle-08" />
                                             </InputGroupText>
                                         </InputGroupAddon>
-                                        <Input placeholder="Name" type="text" />
+                                        <Input placeholder="Name" type="text" onChange={this.handleUsernameChange}/>
                                     </InputGroup>
                                 </FormGroup>
                                 <FormGroup>
@@ -87,7 +142,7 @@ class Register extends React.Component {
                                                 <i className="ni ni-email-83" />
                                             </InputGroupText>
                                         </InputGroupAddon>
-                                        <Input placeholder="Email" type="email" />
+                                        <Input placeholder="Email" type="email" onChange={this.handleEmailChange}/>
                                     </InputGroup>
                                 </FormGroup>
                                 <FormGroup>
@@ -97,7 +152,7 @@ class Register extends React.Component {
                                                 <i className="ni ni-lock-circle-open" />
                                             </InputGroupText>
                                         </InputGroupAddon>
-                                        <Input placeholder="Password" type="password" />
+                                        <Input placeholder="Password" type="password" onChange={this.handlePasswordChange}/>
                                     </InputGroup>
                                 </FormGroup>
                                 <FormGroup>
@@ -107,7 +162,7 @@ class Register extends React.Component {
                                                 <i className="ni ni-lock-circle-open" />
                                             </InputGroupText>
                                         </InputGroupAddon>
-                                        <Input placeholder="Confirm password" type="password" />
+                                        <Input placeholder="Confirm password" type="password" onChange={this.handleConfirmPasswordChange}/>
                                     </InputGroup>
                                 </FormGroup>
                                 <FormGroup>
@@ -118,7 +173,7 @@ class Register extends React.Component {
                                         </p>
                                     </div>
                                     <div>
-                                        <Button block color="secondary" type="button" id="professional-btn">
+                                        <Button block color="secondary" type="button" id="professional-btn" onClick={() => this.handleMusicianTypeChange("professional")}>
                                             <span className="btn-inner--text">Professional</span>
                                         </Button>
                                         <UncontrolledTooltip
@@ -131,7 +186,7 @@ class Register extends React.Component {
                                     </div>
                                     <p></p>
                                     <div>
-                                        <Button block color="secondary" type="button" id="casual-btn">
+                                        <Button block color="secondary" type="button" id="casual-btn" onClick={() => this.handleMusicianTypeChange("casual")}>
                                             <span className="btn-inner--text">Casual</span>
                                         </Button>
                                         <UncontrolledTooltip
@@ -172,7 +227,7 @@ class Register extends React.Component {
                                     </Col>
                                 </Row> */}
                                 <div className="text-center">
-                                    <Button className="mt-4" color="primary" type="button">
+                                    <Button className="mt-4" color="primary" type="button" onClick={this.registerWithEmail}>
                                         Create account
                                     </Button>
                                 </div>
