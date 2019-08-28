@@ -23,6 +23,7 @@ class Register extends React.Component {
         // START: Methods for registering user
         this.registerWithEmail = this.registerWithEmail.bind(this)
         this.resetUserInfo = this.resetUserInfo.bind(this)
+        this.validateEmail = this.validateEmail.bind(this)
         // END: Methods for registering user
 
         // START: Methods for user infos
@@ -42,7 +43,7 @@ class Register extends React.Component {
             musician_type: '',
             // END: States for user infos
 
-            professional_content: 'A musician performing arts full-time, looking to network & collaborate with other musicians',
+            professional_content: 'A full-time musician looking to network & collaborate with other musicians',
             casual_content: 'A hobbyist looking to find like-minded friends to play music & jam together'
         }
     }
@@ -57,26 +58,52 @@ class Register extends React.Component {
             musician_type: ''
         })
     }
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
+    }
     registerWithEmail() {
         console.log(this.state)
+        // Check if email has the correct format
+        if (!this.validateEmail(this.state.email)) {
+            alert('Your email seems to be incorrect. Please check again!')
+            return
+        }
+        // Check if password is at least 6 characters
+        if (this.state.password.length < 6) {
+            alert('Your password should be at least 6-character long. Please try again!')
+            return
+        }
+        // Check if password & confirm_password are the same
+        if (this.state.password !== this.state.confirm_password) {
+            alert('Your confirm password does not match. Please try again!')
+            return
+        }
+        // Check if musician_type are empty or not
+        if (this.state.musician_type === '') {
+            alert('Type of musician is required. Please try again!')
+            return
+        }
+
+        console.log('You are good to go')
     }
     // END: Methods for registering user
 
     // START: Methods for user infos
     handleUsernameChange(event) {
-        this.setState({ username: event.target.value })
+        this.setState({ username: event.target.value.trim() })
     }
     handleEmailChange(event) {
-        this.setState({ email: event.target.value })
+        this.setState({ email: event.target.value.trim() })
     }
     handlePasswordChange(event) {
-        this.setState({ password: event.target.value })
+        this.setState({ password: event.target.value.trim() })
     }
     handleConfirmPasswordChange(event) {
-        this.setState({ confirm_password: event.target.value })
+        this.setState({ confirm_password: event.target.value.trim() })
     }
     handleMusicianTypeChange(value) {
-        this.setState({ musician_type: value })
+        this.setState({ musician_type: value.trim() })
     }
     // END: Methods for user infos
 
