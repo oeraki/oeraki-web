@@ -164,7 +164,7 @@ class Collaboration extends React.Component {
 
         // Send message
         let message_content = this.state.message_content
-        if (message_content != '') {
+        if (message_content !== '') {
             let db = this.state.databaseRef
             let conversation_ref = db.collection('conversations').doc(conversation_id)
             // Save message_content in database, with randomly generated ID

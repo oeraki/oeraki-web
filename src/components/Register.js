@@ -4,7 +4,6 @@ import React from "react";
 import {
     Button,
     Card,
-    CardHeader,
     CardBody,
     FormGroup,
     Form,
@@ -12,17 +11,26 @@ import {
     InputGroupAddon,
     InputGroupText,
     InputGroup,
-    Row,
-    Col
+    Col,
+    UncontrolledTooltip
 } from "reactstrap";
 
 class Register extends React.Component {
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            professional_content: 'A musician performing arts full-time, looking to network & collaborate with other musicians',
+            casual_content: 'A hobbyist looking to find like-minded friends to play music & jam together'
+        }
+    }
+
     render() {
         return (
             <>
                 <Col lg="6" md="8">
                     <Card className="bg-secondary shadow border-0">
-                        <CardHeader className="bg-transparent pb-5">
+                        {/* <CardHeader className="bg-transparent pb-5">
                             <div className="text-muted text-center mt-2 mb-4">
                                 <small>Sign up with</small>
                             </div>
@@ -56,17 +64,17 @@ class Register extends React.Component {
                                     <span className="btn-inner--text">Google</span>
                                 </Button>
                             </div>
-                        </CardHeader>
+                        </CardHeader> */}
                         <CardBody className="px-lg-5 py-lg-5">
                             <div className="text-center text-muted mb-4">
-                                <small>Or sign up with credentials</small>
+                                <p>Create a new account</p>
                             </div>
                             <Form role="form">
                                 <FormGroup>
                                     <InputGroup className="input-group-alternative mb-3">
                                         <InputGroupAddon addonType="prepend">
                                             <InputGroupText>
-                                                <i className="ni ni-hat-3" />
+                                                <i className="ni ni-circle-08" />
                                             </InputGroupText>
                                         </InputGroupAddon>
                                         <Input placeholder="Name" type="text" />
@@ -92,13 +100,56 @@ class Register extends React.Component {
                                         <Input placeholder="Password" type="password" />
                                     </InputGroup>
                                 </FormGroup>
-                                <div className="text-muted font-italic">
+                                <FormGroup>
+                                    <InputGroup className="input-group-alternative">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="ni ni-lock-circle-open" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input placeholder="Confirm password" type="password" />
+                                    </InputGroup>
+                                </FormGroup>
+                                <FormGroup>
+                                    <div className="text-muted">
+                                        <p>
+                                            What type of musician are you?
+                                            <span className="text-primary"> (Required)</span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <Button block color="secondary" type="button" id="professional-btn">
+                                            <span className="btn-inner--text">Professional</span>
+                                        </Button>
+                                        <UncontrolledTooltip
+                                            delay={0}
+                                            placement="right"
+                                            target="professional-btn"
+                                        >
+                                            {this.state.professional_content}
+                                        </UncontrolledTooltip>
+                                    </div>
+                                    <p></p>
+                                    <div>
+                                        <Button block color="secondary" type="button" id="casual-btn">
+                                            <span className="btn-inner--text">Casual</span>
+                                        </Button>
+                                        <UncontrolledTooltip
+                                            delay={0}
+                                            placement="right"
+                                            target="casual-btn"
+                                        >
+                                            {this.state.casual_content}
+                                        </UncontrolledTooltip>
+                                    </div>
+                                </FormGroup>
+                                {/* <div className="text-muted font-italic">
                                     <small>
                                         password strength:{" "}
                                         <span className="text-success font-weight-700">strong</span>
                                     </small>
-                                </div>
-                                <Row className="my-4">
+                                </div> */}
+                                {/* <Row className="my-4">
                                     <Col xs="12">
                                         <div className="custom-control custom-control-alternative custom-checkbox">
                                             <input
@@ -119,7 +170,7 @@ class Register extends React.Component {
                                             </label>
                                         </div>
                                     </Col>
-                                </Row>
+                                </Row> */}
                                 <div className="text-center">
                                     <Button className="mt-4" color="primary" type="button">
                                         Create account
