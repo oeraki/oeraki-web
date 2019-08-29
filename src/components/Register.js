@@ -86,6 +86,40 @@ class Register extends React.Component {
         }
 
         console.log('You are good to go')
+        var email = this.state.email
+        var password = this.state.password
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((result) => {
+            alert('New account successfully created')
+            // Save user info to the database
+            var user = result.user
+            var userData = firebase.firestore().collection("users").doc(user.uid)
+            userData.set({
+                description: 'A musician who just joined Corner!',
+                email: user.email,
+                address: 'Singapore', //Hardcoded value, will change in the future
+                avatar: 'https://firebasestorage.googleapis.com/v0/b/oeraki-f85a5.appspot.com/o/images%2Fdefault_profile.jpg?alt=media&token=82b4acda-09c8-4c9b-8014-336228855005',
+                fans: [],
+                reviews: [],
+                skills: ['Musician'],
+                type: this.state.musician_type,
+                username: this.state.username
+            })
+            .then(() => {
+                console.log('User data initiated successfully')
+                // this.resetUserInfo()
+            })
+            .catch((error) => {
+                console.log('Error initiating user data: ' + error)
+            })
+        })
+        .catch((error) => {
+            // Handle Errors here.
+            // var errorCode = error.code;
+            var errorMessage = error.message;
+            // ...
+            alert('Error registering account: ' + errorMessage)
+        });
     }
     // END: Methods for registering user
 
