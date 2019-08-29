@@ -234,7 +234,14 @@ class Register extends React.Component {
                                         </p>
                                     </div>
                                     <div>
-                                        <Button block color="secondary" type="button" id="professional-btn" onClick={() => this.handleMusicianTypeChange("professional")}>
+                                        <Button 
+                                            block color="secondary" 
+                                            type="button" 
+                                            id="professional-btn" 
+                                            onClick={() => this.handleMusicianTypeChange("professional")}
+                                            aria-pressed={true}
+                                            className={this.state.musician_type === "professional" ? 'active' : null}
+                                        >
                                             <span className="btn-inner--text">Professional</span>
                                         </Button>
                                         <UncontrolledTooltip
@@ -247,7 +254,14 @@ class Register extends React.Component {
                                     </div>
                                     <p></p>
                                     <div>
-                                        <Button block color="secondary" type="button" id="casual-btn" onClick={() => this.handleMusicianTypeChange("casual")}>
+                                        <Button 
+                                            block color="secondary" 
+                                            type="button" 
+                                            id="casual-btn" 
+                                            onClick={() => this.handleMusicianTypeChange("casual")}
+                                            aria-pressed={true}
+                                            className={this.state.musician_type === "casual" ? 'active' : null}
+                                        >
                                             <span className="btn-inner--text">Casual</span>
                                         </Button>
                                         <UncontrolledTooltip

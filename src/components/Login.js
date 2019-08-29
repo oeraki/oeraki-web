@@ -20,8 +20,8 @@ class Login extends React.Component {
         super(props)
 
         this.loginWithEmail = this.loginWithEmail.bind(this)
-        this.loginWithGoogle = this.loginWithGoogle.bind(this)
         this.logout = this.logout.bind(this)
+        this.validateEmail = this.validateEmail.bind(this)
 
         this.handleEmailChange = this.handleEmailChange.bind(this)
         this.handlePasswordChange = this.handlePasswordChange.bind(this)
@@ -45,43 +45,27 @@ class Login extends React.Component {
         });
     }
 
-    loginWithEmail() {
-        firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-            .then(() => {
-                alert('Login successfully')
-            })
-            .catch((error) => {
-                let errorCode = error.code
-                let errorMessage = error.message
-                let messageToShow = errorCode + ': ' + errorMessage
-                alert(messageToShow)
-            })
+    validateEmail(email) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(String(email).toLowerCase());
     }
 
-    loginWithGoogle() {
-        let provider = new firebase.auth.GoogleAuthProvider()
-        firebase.auth().signInWithPopup(provider)
-            .then((result) => {
-                // This gives you a Google Access Token. You can use it to access the Google API.
-                // var token = result.credential.accessToken;
-                // The signed-in user info.
-                // var user = result.user;
-                // ...
-                alert('Login successfully')
-            })
-            .catch((error) => {
-                // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                // The email of the user's account used.
-                // var email = error.email;
-                // The firebase.auth.AuthCredential type that was used.
-                // var credential = error.credential;
-                // ...
-                let messageToShow = errorCode + ': ' + errorMessage
-                alert(messageToShow)
-            });
-
+    loginWithEmail() {
+        // Check if email has the correct format
+        if (!this.validateEmail(this.state.email)) {
+            alert('Your email seems to be incorrect. Please check again!')
+            return
+        }
+        firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+        .then(() => {
+            alert('Login successfully')
+        })
+        .catch((error) => {
+            let errorCode = error.code
+            let errorMessage = error.message
+            let messageToShow = errorCode + ': ' + errorMessage
+            alert(messageToShow)
+        })
     }
 
     logout() {
@@ -111,27 +95,6 @@ class Login extends React.Component {
                 {!this.state.user && 
                     <Col lg="5" md="7">
                         <Card className="bg-secondary shadow border-0">
-                            {/* <CardHeader className="bg-transparent pb-5">
-                                <div className="text-muted text-center mt-2 mb-3">
-                                    <small>Sign in with</small>
-                                </div>
-                                <div className="btn-wrapper text-center">
-                                    <Button
-                                        className="btn-neutral btn-icon"
-                                        color="default"
-                                        href="#pablo"
-                                        onClick={this.loginWithGoogle}
-                                    >
-                                        <span className="btn-inner--icon">
-                                            <img
-                                                alt="..."
-                                                src={require("../assets/img/icons/common/google.svg")}
-                                            />
-                                        </span>
-                                        <span className="btn-inner--text">Google</span>
-                                    </Button>
-                                </div>
-                            </CardHeader> */}
                             <CardBody className="px-lg-5 py-lg-5">
                                 <div className="text-center text-muted mb-4">
                                     <p>Sign in with credentials</p>

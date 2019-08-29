@@ -88,7 +88,8 @@ class Profile extends React.Component {
                 description: '',
                 username: '',
                 skills: [],
-                avatar: ''
+                avatar: '',
+                type: ''
             },
             // END: States for Firebase + Current User
             
@@ -182,7 +183,8 @@ class Profile extends React.Component {
                         username: doc.data().username,
                         address: doc.data().address,
                         description: doc.data().description,
-                        avatar: doc.data().avatar
+                        avatar: doc.data().avatar,
+                        type: doc.data().type
                     }
                 })
             }
@@ -302,7 +304,8 @@ class Profile extends React.Component {
                     username: doc.data().username,
                     address: doc.data().address,
                     description: doc.data().description,
-                    avatar: doc.data().avatar
+                    avatar: doc.data().avatar,
+                    type: doc.data().type
                 },
                 editModal: !self.state.editModal,
             })
@@ -522,7 +525,7 @@ class Profile extends React.Component {
                                         />
                                     </FormGroup>
                                     <FormGroup>
-                                        <label className="form-control-label">Skills</label>
+                                        <label className="form-control-label">Skills (Separate by comma)</label>
                                         <Input
                                             className="form-control-alternative"
                                             placeholder="Tell us about your skills (Hint: If you have multiple skills, use commas to separate them)"
@@ -799,10 +802,10 @@ class Profile extends React.Component {
                                         <span key={index}><Badge color="primary">{skill}</Badge> </span>
                                     ))}
                                     </div>
-                                    {/* <div>
-                                    <i className="ni education_hat mr-2" />
-                                    University of Computer Science
-                                    </div> */}
+                                    <div>
+                                        <i className="ni education_hat mr-2" />
+                                        {this.state.userMetadata.type}
+                                    </div>
                                     <hr className="my-4" />
                                     <p>
                                     {this.state.userMetadata.description}
