@@ -1,6 +1,6 @@
 import React from "react";
 import Header from './Header';
-import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge, Button, Modal, CardHeader, FormGroup, Input, Alert } from "reactstrap";
+import { Card, CardBody, CardTitle, Container, Row, Col, CardImg, Badge, Button, Modal, CardHeader, FormGroup, Input, Alert, InputGroup, InputGroupAddon, InputGroupText } from "reactstrap";
 import firebase from '../firebase';
 
 class Events extends React.Component {
@@ -79,6 +79,20 @@ class Events extends React.Component {
                 <Header />
                 {!this.state.showEventDetail &&
                     <Container className=" mt--7" fluid>
+                        <Row>
+                            <div className="navbar-search navbar-search-dark form-inline mr-3 d-sm-flex d-md-flex ml-lg-auto">
+                                <FormGroup className="mb-0">
+                                    <InputGroup className="input-group-alternative">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="fas fa-search" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        <Input placeholder="Search" type="text" />
+                                    </InputGroup>
+                                </FormGroup>
+                            </div>
+                        </Row>
                         <Row>
                             <Col lg="6" xl="3">
                                 <div style={{ marginBottom: '15px', marginTop: '15px' }}>

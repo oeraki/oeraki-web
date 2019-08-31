@@ -16,7 +16,8 @@ import {
     Input,
     InputGroup,
     InputGroupAddon,
-    InputGroupText
+    InputGroupText,
+    FormGroup
 } from "reactstrap";
 import firebase from '../firebase';
 
@@ -42,7 +43,15 @@ class Collaboration extends React.Component {
         this.handleMessageContentChange = this.handleMessageContentChange.bind(this)
         // END: Listeners for sending message
 
+        // START: Listeners for searching for musician
+        this.searchMusician = this.searchMusician.bind(this)
+        // END: Listeners for searching for musician
+
         this.state = {
+            // START: States for searching for musician
+            user_type: '',
+            // END: States for searching for musician
+
             // START: States for Firestore
             databaseRef: firebase.firestore(),
             user: firebase.auth().currentUser,
@@ -75,8 +84,9 @@ class Collaboration extends React.Component {
         let db = this.state.databaseRef
         let self = this
 
-        // Listener on events
-        db.collection("users").onSnapshot(function (querySnapshot) {
+        // Listener on users
+        db.collection("users").get()
+        .then(function (querySnapshot) {
             var musicians = [];
             querySnapshot.forEach(function (doc) {
                 let musician = doc.data()
@@ -86,10 +96,67 @@ class Collaboration extends React.Component {
             self.setState({
                 musicians: musicians
             })
-            // console.log(self.state.musicians)
-        });
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+
+        // Get user_type
+        db.collection("users").doc(this.state.user.uid).get()
+        .then((doc) => {
+            if (doc.exists) {
+                this.setState({
+                    user_type: doc.data().type
+                })
+            } else {
+                console.log('Current user does not have info in the database')
+            }
+        })
+        .catch((error) => {
+            console.log(error)
+        })
     }
     // END: Methods for REACT Life Cycle
+
+    // START: Methods for searching for musician
+    searchMusician(event) {
+        if (event.key === 'Enter') {
+            var searchWord = event.target.value.trim().toLowerCase()
+            var userType = this.state.user_type
+            // Search for all musician with type === userType & name contains searchWord
+            var db = this.state.databaseRef
+            db.collection("users").get()
+            .then((querySnapshot) => {
+                var musicians = [];
+                querySnapshot.forEach(function (doc) {
+                    let musician = doc.data()
+                    musician['id'] = doc.id
+                    musicians.push(musician);
+                })
+                // Filter musicians
+                var filtered_musicians = []
+                for (var i = 0; i < musicians.length; i++) {
+                    var musician = musicians[i]
+                    if (musician.type === userType) {
+                        if (searchWord === '') {
+                            filtered_musicians.push(musician)
+                        } else {
+                            if (musician.username.toLowerCase().includes(searchWord)) {
+                                filtered_musicians.push(musician)
+                            }
+                        }
+                    }
+                }
+                this.setState({
+                    musicians: filtered_musicians
+                })
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+        }
+    }
+    // END: Methods for searching for musician
 
     // START: Methods for Musician Detail Toggle
     toggleMusicianDetail(musician) {
@@ -199,6 +266,21 @@ class Collaboration extends React.Component {
                 <Header />
                 {!this.state.showMusicianDetail &&
                     <Container className=" mt--7" fluid>
+                        <Row>
+                            <div className="navbar-search navbar-search-dark form-inline mr-3 d-sm-flex d-md-flex ml-lg-auto">
+                                <FormGroup className="mb-0">
+                                    <InputGroup className="input-group-alternative">
+                                        <InputGroupAddon addonType="prepend">
+                                            <InputGroupText>
+                                                <i className="fas fa-search" />
+                                            </InputGroupText>
+                                        </InputGroupAddon>
+                                        {/* Doing */}
+                                        <Input placeholder="Search" type="text" onKeyDown={this.searchMusician}/>
+                                    </InputGroup>
+                                </FormGroup>
+                            </div>
+                        </Row>
                         <Row>
                             <Col lg="6" xl="3">
                                 <div style={{ marginBottom: '15px', marginTop: '15px' }}>
@@ -318,7 +400,6 @@ class Collaboration extends React.Component {
                             </div>
                         </Modal>
                         {/* END: Modal for Opening Video */}
-                        {/* Doing */}
                         
                         {/* START: Modal for Messenger */}
                         <Modal
@@ -438,7 +519,6 @@ class Collaboration extends React.Component {
                                                     <span key={index}><Badge color="primary">{skill}</Badge> </span>
                                                 ))}
                                             </div>
-                                            {/* Doing */}
                                             <div>
                                                 <i className="ni education_hat mr-2" />
                                                 {this.state.currentMusician.type} musician
