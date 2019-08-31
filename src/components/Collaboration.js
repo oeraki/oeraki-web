@@ -97,7 +97,7 @@ class Collaboration extends React.Component {
         let self = this
 
         if (musician) {
-            db.collection("demo_users").doc(musician.id).collection("videos").get().then(function (querySnapshot) {
+            db.collection("users").doc(musician.id).collection("videos").get().then(function (querySnapshot) {
                 let uploaded_videos = []
                 querySnapshot.forEach(function (doc) {
                     // doc.data() is never undefined for query doc snapshots
@@ -507,7 +507,7 @@ class Collaboration extends React.Component {
                                                     </CardTitle>
                                                     <span className="mt-3 mb-0 text-muted text-sm">
                                                         by {video.ownerName}<br></br>
-                                                        {video.views} views<br></br>
+                                                        {/* {video.views} views<br></br> */}
                                                         {/* <Button color="secondary" size="sm"
                                                             type="button"
                                                             onClick={() => this.removeVideo(video)}

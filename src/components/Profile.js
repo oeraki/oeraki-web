@@ -859,7 +859,7 @@ class Profile extends React.Component {
                                                 </CardTitle>
                                                 <span className="mt-3 mb-0 text-muted text-sm">
                                                     by {video.ownerName}<br></br>
-                                                    {video.views} views<br></br>
+                                                    {/* {video.views} views<br></br> */}
                                                     {/* 3:30 */}
                                                     <Button color="secondary" size="sm" 
                                                         type="button"
