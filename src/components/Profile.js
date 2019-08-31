@@ -443,7 +443,7 @@ class Profile extends React.Component {
                                             </span>
                                         </CardText>
                                         <video width="100%" controls>
-                                        <source src={this.state.current_video.videoSource} type="video/mp4">
+                                            <source src={this.state.current_video.videoSource} type="video/mp4">
                                             </source>
                                         </video>
                                     </CardBody>

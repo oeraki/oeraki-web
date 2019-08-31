@@ -76,7 +76,7 @@ class Collaboration extends React.Component {
         let self = this
 
         // Listener on events
-        db.collection("demo_users").onSnapshot(function (querySnapshot) {
+        db.collection("users").onSnapshot(function (querySnapshot) {
             var musicians = [];
             querySnapshot.forEach(function (doc) {
                 let musician = doc.data()
@@ -290,16 +290,10 @@ class Collaboration extends React.Component {
                                                     {this.state.current_video.description}
                                                 </span>
                                             </CardText>
-                                            {/* <video width="100%" controls>
+                                            <video width="100%" controls>
                                                 <source src={this.state.current_video.videoSource} type="video/mp4">
                                                 </source>
-                                            </video> */}
-                                            <iframe width="100%" height="315" 
-                                                src={this.state.current_video.videoSource} 
-                                                frameBorder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" 
-                                                allowFullScreen
-                                            >
-                                            </iframe>
+                                            </video>
                                         </CardBody>
                                     </Card>
                                 }
@@ -444,6 +438,11 @@ class Collaboration extends React.Component {
                                                     <span key={index}><Badge color="primary">{skill}</Badge> </span>
                                                 ))}
                                             </div>
+                                            {/* Doing */}
+                                            <div>
+                                                <i className="ni education_hat mr-2" />
+                                                {this.state.currentMusician.type} musician
+                                            </div>
                                             <hr className="my-4" />
                                             <p>
                                                 {this.state.currentMusician.description}
@@ -521,7 +520,7 @@ class Collaboration extends React.Component {
                                         </CardBody>
                                     </Card>
                                 ))}
-                                {/* {this.state.uploaded_videos.length === 0 &&
+                                {this.state.uploaded_videos.length === 0 &&
                                     <Card
                                         className="bg-secondary shadow"
                                         style={{ marginBottom: '10px' }}
@@ -531,14 +530,12 @@ class Collaboration extends React.Component {
                                                 <i className="ni ni-image ni-3x" />
                                                 <h4 className="heading mt-4">Nothing to see here...</h4>
                                                 <p>
-                                                    It seems you have not uploaded any music videos
-                                                    <br></br>
-                                                    Click 'Upload song'
+                                                    It seems this musician have not uploaded any music videos
                                                 </p>
                                             </div>
                                         </CardBody>
                                     </Card>
-                                } */}
+                                }
                             </Col>
                         </Row>
 
