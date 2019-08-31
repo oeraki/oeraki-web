@@ -22,6 +22,8 @@ import {
 class DashboardNavbar extends React.Component {
     constructor(props) {
         super(props)
+
+        this.logout = this.logout.bind(this)
         
         this.state = {
             user: firebase.auth().currentUser,

@@ -804,7 +804,7 @@ class Profile extends React.Component {
                                     </div>
                                     <div>
                                         <i className="ni education_hat mr-2" />
-                                        {this.state.userMetadata.type}
+                                        {this.state.userMetadata.type} musician
                                     </div>
                                     <hr className="my-4" />
                                     <p>

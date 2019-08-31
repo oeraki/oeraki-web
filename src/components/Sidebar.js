@@ -45,6 +45,7 @@ class Sidebar extends React.Component {
     constructor(props) {
         super(props);
         this.activeRoute.bind(this);
+        this.logout = this.logout.bind(this)
         this.state = {
             user: firebase.auth().currentUser,
             databaseRef: firebase.firestore(),
@@ -107,6 +108,20 @@ class Sidebar extends React.Component {
             );
         });
     };
+
+    logout() {
+        firebase.auth().signOut()
+            .then(() => {
+                console.log('Sign out successfully')
+            })
+            .catch((error) => {
+                let errorCode = error.code
+                let errorMessage = error.message
+                let messageToShow = errorCode + ': ' + errorMessage
+                alert(messageToShow)
+            })
+    }
+
     render() {
         const { bgColor, routes, logo } = this.props;
         let navbarBrandProps;
@@ -195,7 +210,7 @@ class Sidebar extends React.Component {
                                     <span>Support</span>
                                 </DropdownItem>
                                 <DropdownItem divider />
-                                <DropdownItem href="#pablo" onClick={e => e.preventDefault()}>
+                                <DropdownItem href="#pablo" onClick={this.logout}>
                                     <i className="ni ni-user-run" />
                                     <span>Logout</span>
                                 </DropdownItem>
