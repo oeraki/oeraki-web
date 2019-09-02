@@ -161,7 +161,7 @@ class Profile extends React.Component {
         let self = this
 
         // Listener on current user's uploaded videos
-        db.collection("users").doc(this.state.user.uid).collection("videos").onSnapshot(function (querySnapshot) {
+        this.unsub_videos = db.collection("users").doc(this.state.user.uid).collection("videos").onSnapshot(function (querySnapshot) {
                 var uploaded_videos = [];
                 querySnapshot.forEach(function (doc) {
                     let uploaded_video = doc.data()
@@ -174,7 +174,7 @@ class Profile extends React.Component {
         });
 
         // Listener on current user's metadata
-        db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
+        this.unsub_usermetadata = db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
             console.log("Current userMetadata: ", doc.data());
             if (doc.data()) {
                 self.setState({
@@ -189,6 +189,11 @@ class Profile extends React.Component {
                 })
             }
         });
+    }
+
+    componentWillUnmount() {
+        this.unsub_videos && this.unsub_videos()
+        this.unsub_usermetadata && this.unsub_usermetadata()
     }
     // END: Methods for REACT Life Cycle
 

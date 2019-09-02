@@ -24,17 +24,17 @@ var routes = [
         layout: "/dashboard"
     },
     {
-        path: "/events",
-        name: "Events",
-        icon: "ni ni-notification-70 text-primary",
-        component: Events,
-        layout: "/dashboard"
-    },
-    {
         path: "/collaboration",
         name: "Collaboration",
         icon: "ni ni-world text-primary",
         component: Collaboration,
+        layout: "/dashboard"
+    },
+    {
+        path: "/events",
+        name: "Events",
+        icon: "ni ni-notification-70 text-primary",
+        component: Events,
         layout: "/dashboard"
     },
 ];

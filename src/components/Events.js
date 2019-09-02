@@ -38,7 +38,7 @@ class Events extends React.Component {
         let self = this
 
         // Listener on events
-        db.collection("events").onSnapshot(function (querySnapshot) {
+        this.unsub_events = db.collection("events").onSnapshot(function (querySnapshot) {
             var events = [];
             querySnapshot.forEach(function (doc) {
                 let event = doc.data()
@@ -49,6 +49,10 @@ class Events extends React.Component {
                 events: events
             })
         });
+    }
+
+    componentWillUnmount() {
+        this.unsub_events && this.unsub_events()
     }
     // END: Methods for REACT Life Cycle
 

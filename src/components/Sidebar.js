@@ -61,7 +61,7 @@ class Sidebar extends React.Component {
         let self = this
 
         // Listener on current user's metadata
-        db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
+        this.unsub_usermetadata = db.collection("users").doc(this.state.user.uid).onSnapshot(function (doc) {
             console.log("Current userMetadata: ", doc.data());
             if (doc.data()) {
                 self.setState({
@@ -72,6 +72,10 @@ class Sidebar extends React.Component {
                 })
             }
         });
+    }
+
+    componentWillUnmount() {
+        this.unsub_usermetadata && this.unsub_usermetadata()
     }
     
     // verifies if routeName is the one active (in browser input)

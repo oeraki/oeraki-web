@@ -16,9 +16,13 @@ class App extends Component {
   }
 
   componentDidMount() {
-    firebase.auth().onAuthStateChanged((user) => {
+    this.unsub_user = firebase.auth().onAuthStateChanged((user) => {
       this.setState({ user: user })
     });
+  }
+
+  componentWillUnmount() {
+    this.unsub_user && this.unsub_user()
   }
 
   render() {
