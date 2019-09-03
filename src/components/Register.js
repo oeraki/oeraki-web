@@ -98,7 +98,7 @@ class Register extends React.Component {
                 description: 'A musician who just joined Corner!',
                 email: user.email,
                 address: 'Singapore', //Hardcoded value, will change in the future
-                avatar: 'https://firebasestorage.googleapis.com/v0/b/oeraki-f85a5.appspot.com/o/images%2Fdefault_profile.jpg?alt=media&token=82b4acda-09c8-4c9b-8014-336228855005',
+                avatar: 'https://firebasestorage.googleapis.com/v0/b/oeraki-f85a5.appspot.com/o/images%2Fdefault_profile.jpg?alt=media&token=d0c42458-6d2b-4cca-91db-1cfaf12a644c',
                 fans: [],
                 reviews: [],
                 skills: ['Musician'],
